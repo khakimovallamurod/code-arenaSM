@@ -45,7 +45,7 @@
 <strong>Input</strong>:</br><?=$test['input']?>
 </br><strong>Output</strong>:</br><?=$test['output']?>
                 </pre>
-                <? endforeach ; ?>
+                <?php endforeach ; ?>
                 <h3 style="margin-top: 2rem;">Constraints:</h3>
                 <ul>
                     <li><?=$solutions['constraints'] ?></li>
