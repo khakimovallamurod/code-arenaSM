@@ -24,7 +24,7 @@
                 <input type="text" placeholder="Search problems..." id="searchInput" onkeyup="filterProblems()">
             </div>
             <select id="difficultyFilter" onchange="filterProblems()">
-                <option value="">All Difficulties</option>
+                <option value="">Barcha qiyinchilikdagilar</option>
                 <option value="beginner">Beginner</option>
                 <option value="easy">Easy</option>
                 <option value="medium">Medium</option>
@@ -32,7 +32,7 @@
                 <option value="expert">Expert</option>
             </select>
             <select id="tagFilter" onchange="filterProblems()">
-                <option value="">All Tags</option>
+                <option value="">Barcha turdagi</option>
                 <option value="array">Array</option>
                 <option value="string">String</option>
                 <option value="math">Math</option>
