@@ -16,7 +16,7 @@
         <div class="university-banner">
             <div class="university-banner-icon">🎓</div>
             <div>
-                <strong>SamDU Dasturchilar Loyihasi</strong>
+                <strong>SamDU dasturchilar loyihasi</strong>
                 <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
                     Talabalarni hamkorlikda o‘rganish va musobaqaviy dasturlash orqali dunyo miqyosidagi dasturchilarga aylantirish
                 </p>
@@ -26,7 +26,7 @@
         <div class="hero-university">
             <div class="hero-content">
                 <div class="hero-badge">🎓 SAMDU DASTURCHI LOYIHASI</div>
-                <h1 class="hero-title">Algorithmlarni birga o'rganamiz!</h1>
+                <h1 class="hero-title">Algoritmlarni birga o'rganamiz!</h1>
                 <p class="hero-subtitle">
                     Samarqand davlat universiteti Sun'iy intellekt va raqamli texnologiyalar fakultiteti tomonidan tashkil etilgan loyihaga qo'shiling. 
                     Bir million dasturchini tayyorlash maqsadida algoritmik fikrlashni rivojlantiring.
@@ -34,27 +34,27 @@
                 </p>
                 
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="problems.php" class="btn btn-primary">O‘rganishni Boshlash</a>
-                    <a href="contests.php" class="btn btn-secondary">Musobaqaga Qo‘shilish</a>
+                    <a href="problems.php" class="btn btn-primary">O‘rganishni boshlash</a>
+                    <a href="contests.php" class="btn btn-secondary">Musobaqaga qo‘shilish</a>
                 </div>
 
                 <!-- Hero Stats -->
                 <div class="hero-stats">
                     <div class="hero-stat-item">
                         <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Talabalar Ro‘yxatdan O‘tgan</div>
+                        <div class="hero-stat-label">Talabalar ro‘yxatdan o‘tgan</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Dasturlash Masalalari</div>
+                        <div class="hero-stat-label">Dasturlash masalalari</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Fakultetlar Ishtirok Etmoqda</div>
+                        <div class="hero-stat-label">Fakultetlar ishtirok etmoqda</div>
                     </div>
                     <div class="hero-stat-item">
                         <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Yechilgan Masalalar</div>
+                        <div class="hero-stat-label">Yechilgan masalalar</div>
                     </div>
                 </div>
             </div>
@@ -62,17 +62,17 @@
 
        <!-- Tezkor Navigatsiya Kartalari -->
         <div class="section-header">
-            <h2 class="section-title">Tezkor Kirish</h2>
+            <h2 class="section-title">Tezkor kirish</h2>
         </div>
         <div class="quick-nav-grid">
             <a href="problems.php" class="quick-nav-card">
                 <div class="quick-nav-icon floating">📚</div>
-                <h3>Masalalar Kutubxonasi</h3>
+                <h3>Masalalar kutubxonasi</h3>
                 <p>Barcha qiyinchilik darajalari va mavzular tanlangan masalalar</p>
             </a>
             <a href="contests.php" class="quick-nav-card">
                 <div class="quick-nav-icon floating" style="animation-delay: 0.2s;">🏆</div>
-                <h3>Jonli Musobaqalar</h3>
+                <h3>Musobaqalar</h3>
                 <p>Haftalik musobaqalarda ishtirok eting va mahoratingizni sinab ko‘ring</p>
             </a>
             <a href="leaderboard.php" class="quick-nav-card">
