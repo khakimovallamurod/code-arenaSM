@@ -155,18 +155,23 @@ class Database{
         }
         return $data;
     }
-    public function get_all_problems_by_status(){
+    public function get_all_problems_by_status($user_id){
         $sql = "SELECT 
+            u.user_id,
             p.*, 
-            IF(r.solved IS NULL, 0, 1) AS solved,
+            COALESCE(r.solved, 0) AS solved,
             COALESCE(r.attempted, 0) AS attempts
-        FROM problems p
-        CROSS JOIN (
-            SELECT DISTINCT user_id FROM reyting
-        ) u
-        LEFT JOIN reyting r 
-            ON r.problem_id = p.id AND r.user_id = u.user_id
-        ORDER BY u.user_id, p.id;";
+        FROM 
+            (SELECT DISTINCT user_id FROM reyting WHERE user_id = $user_id) u
+        CROSS JOIN 
+            problems p
+        LEFT JOIN 
+            reyting r 
+            ON r.problem_id = p.id 
+            AND r.user_id = u.user_id
+        ORDER BY 
+            p.id;
+        ";
         $result = $this -> query($sql);
         $data = [];
         while ($row = mysqli_fetch_assoc($result)) {

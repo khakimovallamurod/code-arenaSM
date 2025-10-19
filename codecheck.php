@@ -129,6 +129,7 @@
         if ($user_reyting == NULL){
             $insert_reyting  = $db->insert("reyting", $reyting_arr);
         }else{
+            $reyting_id = $user_reyting['id'];
             $attempted = $user_reyting['attempted'] += 1;
             $solved = max($reyting_arr['solved'], $user_reyting['solved']);
             $db->update(
@@ -137,7 +138,7 @@
                     'solved'=>$solved,
                     'attempted'=>$attempted
                 ], 
-                "user_id = $user_id"
+                "id = $reyting_id"
             );
         }
         echo json_encode(['success' => true, 'message' => '✅ Dasturingiz yuborildi!']);

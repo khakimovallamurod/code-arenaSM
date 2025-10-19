@@ -1,8 +1,13 @@
 <?php
-   include_once 'config.php';
-   session_start();
+    include_once 'config.php';
+    session_start();
+    if (!isset($_SESSION['id']) || empty($_SESSION['id']) ) {
+        header("Location: auth/login.php");
+        exit;
+    }
+   $user_id = $_SESSION['id'];
    $db = new Database();
-   $problems = $db->get_all_problems_by_status();
+   $problems = $db->get_all_problems_by_status($user_id);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -65,6 +70,7 @@
             <table id="problemsTable">
                 <thead>
                     <tr>
+                        <th style="width: 80px;">ID</th>
                         <th style="width: 80px;">Status</th>
                         <th>Masala</th>
                         <th style="width: 150px;">Qiyinchiligi</th>
@@ -75,6 +81,7 @@
                 <tbody>
                     <?php foreach ($visibleProblems as $problem): ?>
                     <tr onclick="window.location='problem-detail.php?id=<?= (int)$problem['id'] ?>'">
+                        <td><strong><?= str_pad(htmlspecialchars($problem['id']), 6, '0', STR_PAD_LEFT) ?></strong></td>
                         <td style="font-size: 1.5rem; color: <?= $problem['solved'] ? 'var(--success)' : 'inherit' ?>">
                             <?= $problem['solved'] ? '✓' : '—' ?>
                         </td>

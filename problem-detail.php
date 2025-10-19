@@ -61,7 +61,7 @@
             <!-- Code Editor Section -->
             <div>
                 <form id="attemptForm" onsubmit="submitAttempt(event)">
-                    <input type="hidden" name="user_id" value="<?= $solutions['user_id']; ?>">
+                    <input type="hidden" name="user_id" value="<?= $user_id; ?>">
                     <input type="hidden" name="problem_id" value="<?= $problem_id; ?>">
                     <div class="code-section">
                         <div class="editor-header">
