@@ -2,7 +2,7 @@
 
 class Database{
     private $host = 'localhost';
-    private $db_name = 'code-arena';
+    private $db_name = 'code-arena2v';
     private $username = 'root';
     private $password = '';
     private $link;
@@ -104,8 +104,8 @@ class Database{
             return $this -> query($sql);
         }
     public function get_problem_by_id($table, $id) {
-        $sql = "SELECT 
-            p.*, 
+        $sql = "SELECT
+            p.*,
             u.fullname AS author_name,
             u.id AS user_id
         FROM {$table} p
@@ -115,7 +115,7 @@ class Database{
         return $fetch;
     }
     public function get_attempts_by_user($user_id, $problem_id){
-       $sql = "SELECT 
+       $sql = "SELECT
             a.id AS attempt_id,
             a.problem_id,
             p.title AS problem_title,
@@ -127,7 +127,7 @@ class Database{
             a.created_at
         FROM attempts a
         JOIN problems p ON p.id = a.problem_id
-        WHERE a.user_id = " . intval($user_id) . " and a.problem_id = $problem_id 
+        WHERE a.user_id = " . intval($user_id) . " and a.problem_id = $problem_id
         ORDER BY attempt_id DESC";
         $result = $this -> query($sql);
         $data = [];
@@ -137,13 +137,13 @@ class Database{
         return $data;
     }
     public function get_reyting_by_user(){
-       $sql = "SELECT 
+       $sql = "SELECT
             u.fullname AS user,
             u.username,
-            u.course, 
-            SUM(r.score) AS total_score,   
-            SUM(r.solved) AS solved,            
-            SUM(r.attempted) AS attempts        
+            u.course,
+            SUM(r.score) AS total_score,
+            SUM(r.solved) AS solved,
+            SUM(r.attempted) AS attempts
         FROM reyting r
         JOIN users u ON u.id = r.user_id
         GROUP BY r.user_id
@@ -156,20 +156,17 @@ class Database{
         return $data;
     }
     public function get_all_problems_by_status($user_id){
-        $sql = "SELECT 
-            u.user_id,
-            p.*, 
+        $sql = "SELECT
+            p.*,
             COALESCE(r.solved, 0) AS solved,
             COALESCE(r.attempted, 0) AS attempts
-        FROM 
-            (SELECT DISTINCT user_id FROM reyting WHERE user_id = $user_id) u
-        CROSS JOIN 
+        FROM
             problems p
-        LEFT JOIN 
-            reyting r 
-            ON r.problem_id = p.id 
-            AND r.user_id = u.user_id
-        ORDER BY 
+        LEFT JOIN
+            reyting r
+            ON r.problem_id = p.id
+            AND r.user_id = $user_id
+        ORDER BY
             p.id;
         ";
         $result = $this -> query($sql);
@@ -179,7 +176,7 @@ class Database{
         }
         return $data;
     }
-    
+
 }
 
 ?>

@@ -220,25 +220,84 @@ body {
     font-size: 0.85rem;
     font-weight: 600;
 }
+.badge-beginner {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6; /* Moviy - Beginner */
+}
 
 .badge-easy {
-    background: rgba(5, 150, 105, 0.15);
-    color: var(--success);
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981; /* Yashil - Easy */
 }
 
 .badge-medium {
-    background: rgba(217, 119, 6, 0.15);
-    color: var(--warning);
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b; /* Sariq - Medium */
 }
 
 .badge-hard {
-    background: rgba(220, 38, 38, 0.15);
-    color: var(--danger);
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444; /* Qizil - Hard */
 }
 
-.badge-tag {
-    background: rgba(79, 70, 229, 0.1);
-    color: var(--primary);
+.badge-expert {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6; /* Binafsha - Expert */
+}
+/* --- Kategoriya ranglari (misollar) --- */
+.badge-array {
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6; /* Moviy */
+}
+
+.badge-string {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981; /* Yashil */
+}
+
+.badge-math {
+    background: rgba(245, 158, 11, 0.15);
+    color: #f59e0b; /* Sariq */
+}
+
+.badge-dp {
+    background: rgba(139, 92, 246, 0.15);
+    color: #8b5cf6; /* Binafsha (Dynamic Programming) */
+}
+
+.badge-graph {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444; /* Qizil */
+}
+
+.badge-tree {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e; /* Yashil tusi (Tree) */
+}
+
+.badge-list {
+    background: rgba(37, 99, 235, 0.15);
+    color: #2563eb; /* Ko‘k (List) */
+}
+
+.badge-stack {
+    background: rgba(234, 179, 8, 0.15);
+    color: #eab308; /* Oltin rang (Stack) */
+}
+
+.badge-queue {
+    background: rgba(6, 182, 212, 0.15);
+    color: #06b6d4; /* Okean ko‘k (Queue) */
+}
+
+.badge-sorting {
+    background: rgba(168, 85, 247, 0.15);
+    color: #a855f7; /* Pushti-binafsha (Sorting) */
+}
+
+.badge-ga {
+    background: rgba(244, 63, 94, 0.15);
+    color: #f43f5e; /* To‘q qizil (Graph Algorithms) */
 }
 
 /* Search and Filters */

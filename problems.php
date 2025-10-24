@@ -15,7 +15,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SamCoding</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navbar -->
@@ -51,6 +50,8 @@
                 <option value="ga">Graph Algorithms</option>
             </select>
         </div>
+
+
         <!-- Problems Table -->
         <?php
         $problemsPerPage = 10;  // har sahifada 10 ta masala
@@ -127,25 +128,32 @@
     <?php include_once 'includes/footer.php';?>
     <script src="assets/js/change_style.js"></script>   
     <script>
-        // Filter Problems Function
         function filterProblems() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const difficulty = document.getElementById('difficultyFilter').value.toLowerCase();
-            const tag = document.getElementById('tagFilter').value.toLowerCase();
-            const rows = document.querySelectorAll('#problemsTable tbody tr');
-            
+            const searchValue = document.getElementById("searchInput").value.toLowerCase();
+            const difficultyValue = document.getElementById("difficultyFilter").value.toLowerCase();
+            const tagValue = document.getElementById("tagFilter").value.toLowerCase();
+
+            const rows = document.querySelectorAll("#problemsTable tbody tr");
+
             rows.forEach(row => {
-                const problemName = row.cells[1].textContent.toLowerCase();
-                const problemDiff = row.cells[2].textContent.toLowerCase();
-                const problemTags = row.cells[3].textContent.toLowerCase();
-                
-                const matchesSearch = problemName.includes(searchTerm);
-                const matchesDiff = !difficulty || problemDiff.includes(difficulty);
-                const matchesTag = !tag || problemTags.includes(tag);
-                
-                row.style.display = (matchesSearch && matchesDiff && matchesTag) ? '' : 'none';
+                const title = row.cells[2].textContent.toLowerCase();
+                const difficulty = row.cells[3].textContent.toLowerCase();
+                const tag = row.cells[4].textContent.toLowerCase();
+
+                const matchesSearch = title.includes(searchValue);
+                const matchesDifficulty = difficultyValue === "" || difficulty.includes(difficultyValue);
+                const matchesTag = tagValue === "" || tag.includes(tagValue);
+
+                if (matchesSearch && matchesDifficulty && matchesTag) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
             });
         }
-    </script>
+        </script>
+
+
+
 </body>
 </html>
