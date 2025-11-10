@@ -97,12 +97,12 @@ class Database{
     }
 
     public function delete($table, $con = 'no'){
-            $sql = "DELETE FROM ".$table;
-            if ($con != 'no'){
-                $sql .= " WHERE ".$con;
-            }
-            return $this -> query($sql);
+        $sql = "DELETE FROM ".$table;
+        if ($con != 'no'){
+            $sql .= " WHERE ".$con;
         }
+        return $this -> query($sql);
+    }
     public function get_problem_by_id($table, $id) {
         $sql = "SELECT
             p.*,
@@ -115,7 +115,7 @@ class Database{
         return $fetch;
     }
     public function get_attempts_by_user($user_id, $problem_id){
-       $sql = "SELECT
+        $sql = "SELECT
             a.id AS attempt_id,
             a.problem_id,
             p.title AS problem_title,
@@ -169,6 +169,44 @@ class Database{
         ORDER BY
             p.id;
         ";
+        $result = $this -> query($sql);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+    public function get_contest_attempts_by_user($user_id, $problem_id, $contest_id){
+       $sql = "SELECT 
+            a.id AS attempt_id,
+            a.problem_id,
+            a.contest_id,
+            p.title AS problem_title,
+            a.language,
+            a.runTime,
+            a.memory,
+            a.status,
+            a.tests_passed,
+            a.created_at
+        FROM contest_attempts a
+        JOIN contest_problems p ON p.id = a.problem_id
+        WHERE a.user_id = " . intval($user_id) . " and a.problem_id = $problem_id and a.contest_id = $contest_id
+        ORDER BY attempt_id DESC";
+        $result = $this -> query($sql);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+    public function get_contest_registered_users($contest_id){
+       
+        $sql = "SELECT 
+            u.fullname,
+            cr.created_at
+        FROM contest_register cr
+        JOIN users u ON u.id = cr.user_id
+        WHERE cr.contest_id = " . intval($contest_id);
         $result = $this -> query($sql);
         $data = [];
         while ($row = mysqli_fetch_assoc($result)) {

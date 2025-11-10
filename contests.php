@@ -1,59 +1,168 @@
+<?php
+   session_start();
+   include_once 'config.php';
+   $db = new Database();
+   if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
+      header("Location: auth/login.php");
+      exit;
+   }
+   date_default_timezone_set('Asia/Tashkent');
+   
+   $musobaqalar = $db->get_data_by_table_all("contests");
+   
+   $faol_contestlar = [];
+   $kutilayotgan_contestlar = [];
+   $tugagan_contestlar = [];
+   
+   $now = time();
+   
+   foreach ($musobaqalar as $contest) {
+       $start = strtotime($contest['start_time']);
+       $end = strtotime($contest['end_time']);
+       
+       if ($now < $start) {
+           $actual_status = 0; 
+           $category = &$kutilayotgan_contestlar;
+       } elseif ($now >= $start && $now <= $end) {
+           $actual_status = 1; 
+           $category = &$faol_contestlar;
+       } else {
+           $actual_status = 2; 
+           $category = &$tugagan_contestlar;
+       }
+       
+       if ($contest['status'] != $actual_status) {
+           $db->update("contests", ['status' => $actual_status], "id = ".$contest['id']);
+           $contest['status'] = $actual_status;
+       }
+       
+       $category[] = $contest;
+   }
+   
+   function renderContestCard($contest) {
+       $now = time();
+       $start = strtotime($contest['start_time']);
+       $end = strtotime($contest['end_time']);
+       
+       $status_data = [
+           0 => ['text' => 'Kutilmoqda', 'class' => 'badge-medium'],
+           1 => ['text' => 'Faol', 'class' => 'badge-easy'],
+           2 => ['text' => 'Tugagan', 'class' => 'badge-hard']
+       ];
+       
+       $status = $status_data[$contest['status']];
+       
+       $durationSeconds = abs($end - $start);
+       $durationHours = floor($durationSeconds / 3600);
+       $durationMinutes = floor(($durationSeconds % 3600) / 60);
+       
+       if ($durationMinutes > 0) {
+           $durationText = $durationHours . " soat " . $durationMinutes . " daqiqa";
+       } else {
+           $durationText = $durationHours . " soat";
+       }
+       
+       
+       
+       $registered_count = isset($contest['registered_count']) ? $contest['registered_count'] : 0;
+       ?>
+       <div class="card" onclick="openContestDetail(<?=$contest['id']?>)" style="cursor: pointer;">
+           <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+               <h3><?= htmlspecialchars($contest['title']) ?></h3>
+               <span class="badge <?=$status['class']?>"><?=$status['text']?></span>
+           </div>
+           <p class="text-secondary" style="margin-bottom: 1rem;"><?= htmlspecialchars($contest['description']) ?></p>
+           <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem;">
+               <div>
+                   <div class="text-secondary" style="font-size: 0.9rem;">Boshlanish</div>
+                   <strong><?= date('M j, H:i', $start) ?></strong>
+               </div>
+               <div>
+                   <div class="text-secondary" style="font-size: 0.9rem;">Tugash</div>
+                   <strong><?= date('M j, H:i', $end) ?></strong>
+               </div>
+               <div>
+                   <div class="text-secondary" style="font-size: 0.9rem;">Davomiyligi</div>
+                   <strong><?= $durationText ?></strong>
+               </div>
+               <div>
+                   <div class="text-secondary" style="font-size: 0.9rem;">Ro'yxatdan o'tdi</div>
+                   <strong><?= $registered_count ?> kishi</strong>
+               </div>
+           </div>
+           
+       </div>
+       <?php
+   }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SamCoding</title>
+    <title>SamCoding - Musobaqalar</title>
 </head>
 <body>
     <!-- Navbar -->
     <?php include_once 'includes/novbar.php';?>
-    
+
     <!-- Main Content -->
     <div class="container">
-        <!-- Contest Header -->
-        <div class="contest-header">
-            <h1>Tuzatish ishlari olib borilmoqda</h1>
-            <p class="text-secondary" style="margin-bottom: 1rem;">Tez kunda ishga tushadi</p>
-            <div class="timer" id="contestTimer">02:34:15</div>
-            <p class="text-secondary"></p>
-            <div style="margin-top: 1.5rem;">
-                <span class="badge badge-tag" style="font-size: 1rem; padding: 0.5rem 1rem;">2025</span>
-            </div>
+        <h1 style="margin-bottom: 0.5rem;">Musobaqalar</h1>
+        <p class="text-secondary" style="margin-bottom: 2rem;">Raqobatlashish va o'z ko'nikmalatingizni sinab ko'ring</p>
+
+        <!-- Active Contests -->
+        <?php if (count($faol_contestlar) > 0): ?>
+        <h2 class="mb-1" style="margin-top: 3rem;">Davom etayotgan musobaqalar</h2>
+        <div class="card-grid">
+            <?php foreach ($faol_contestlar as $contest): ?>
+                <?php renderContestCard($contest); ?>
+            <?php endforeach; ?>
         </div>
+        <?php endif; ?>
+
+        <!-- Upcoming Contests -->
+        <?php if (count($kutilayotgan_contestlar) > 0): ?>
+        <h2 class="mb-1" style="margin-top: 3rem;">Kutilayotgan musobaqalar</h2>
+        <div class="card-grid">
+            <?php foreach ($kutilayotgan_contestlar as $contest): ?>
+                <?php renderContestCard($contest); ?>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <!-- Past Contests -->
+        
+        
+        <?php if (empty($musobaqalar)): ?>
+        <div class="card" style="text-align: center; padding: 3rem;">
+            <h3>Hozircha musobaqalar yo'q</h3>
+            <p class="text-secondary">Tez orada yangi musobaqalar boshlanad5i!</p>
+        </div>
+        <?php endif; ?>
         
     </div>
-
-    <!-- Footer -->
-    <?php include_once 'includes/footer.php';?>
-    <script src="assets/js/change_style.js"></script>
     
+    <?php include_once 'includes/footer.php';?>
+    
+    <script src="assets/js/change_style.js"></script>
     <script>
-        // Contest Timer
-        function startContestTimer() {
-            let totalSeconds = 2 * 3600 + 34 * 60 + 15; // 2:34:15
-            
-            setInterval(() => {
-                if (totalSeconds > 0) {
-                    totalSeconds--;
-                    const hours = Math.floor(totalSeconds / 3600);
-                    const minutes = Math.floor((totalSeconds % 3600) / 60);
-                    const seconds = totalSeconds % 60;
-                    
-                    const timerElement = document.getElementById('contestTimer');
-                    if (timerElement) {
-                        timerElement.textContent = 
-                            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                    }
-                } else {
-                    document.getElementById('contestTimer').textContent = 'Contest Ended';
-                    document.getElementById('contestTimer').style.color = 'var(--danger)';
-                }
-            }, 1000);
+        function openContestDetail(contestId) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'contest-detail.php';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'contestid';
+            input.value = contestId;
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
-
-        // Start timer when page loads
-        document.addEventListener('DOMContentLoaded', startContestTimer);
+        
+        setTimeout(function() {
+            location.reload();
+        }, 60000);
     </script>
 </body>
 </html>

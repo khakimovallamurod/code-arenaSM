@@ -857,3 +857,300 @@ textarea {
 
 .text-center { text-align: center; }
 .text-secondary { color: var(--text-secondary); }
+
+
+.contest-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border);
+}
+.contest-tab {
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+.contest-tab:hover {
+    color: var(--text-primary);
+}
+.contest-tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+}
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+}
+.countdown-timer {
+    color: white;
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+}
+
+.countdown-timer h2,
+.countdown-timer p {
+    color: inherit;
+}
+
+.countdown-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.countdown-item {
+    background: rgba(255, 255, 255, 0.25);
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+/* Light mode uchun countdown item */
+:root:not(.dark-mode) .countdown-item {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.countdown-value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    display: block;
+    color: white;
+}
+
+/* Light mode uchun countdown value */
+:root:not(.dark-mode) .countdown-value {
+    color: #2d3748;
+}
+
+.countdown-label {
+    font-size: 0.9rem;
+    opacity: 0.95;
+    margin-top: 0.5rem;
+    color: white;
+}
+
+/* Light mode uchun countdown label */
+:root:not(.dark-mode) .countdown-label {
+    color: #4a5568;
+    opacity: 1;
+}
+.contest-started-banner {
+    background: var(--success);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.contest-ended-banner {
+    background: var(--danger);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+ /* Sidebar Styles */
+.problems-sidebar {
+    width: 300px;
+    background: var(--bg-secondary, #1e1e1e);
+    border-right: 1px solid var(--border-color, #333);
+    padding: 1.5rem;
+    overflow-y: auto;
+    position: fixed;
+    left: 0;
+    top: 60px;
+    bottom: 0;
+    z-index: 100;
+    color: var(--text-primary, #e0e0e0);
+}
+
+.sidebar-header {
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light, #f5f5f5);
+}
+
+.sidebar-header p {
+    font-size: 0.875rem;
+    color: var(--text-muted, #bbb);
+}
+
+/* Problem Card */
+.problem-card {
+    width: 100%;
+    background: var(--bg-tertiary, #2a2a2a);
+    border: 2px solid var(--border-color, #3a3a3a);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    color: var(--text-primary, #f0f0f0);
+}
+
+.problem-card:hover {
+    transform: translateX(5px);
+    border-color: var(--primary-color, #007bff);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.problem-card.active {
+    background: var(--primary-color, #007bff);
+    border-color: var(--primary-color, #007bff);
+    color: white;
+}
+
+.problem-card.active .problem-title,
+.problem-card.active .problem-meta {
+    color: white;
+}
+
+.problem-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.problem-number {
+    font-weight: bold;
+    font-size: 0.875rem;
+    color: var(--text-secondary, #aaa);
+}
+
+.problem-card.active .problem-number {
+    color: rgba(255,255,255,0.9);
+}
+
+.problem-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.status-solved {
+    background: #28a745;
+    color: white;
+}
+
+.status-attempted {
+    background: #ffc107;
+    color: #222;
+}
+
+.status-unsolved {
+    background: #555;
+    color: #999;
+}
+
+.problem-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary, #f0f0f0);
+}
+
+.problem-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.difficulty-badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.difficulty-easy {
+    background: #2d5032;
+    color: #90ee90;
+}
+
+.difficulty-medium {
+    background: #554e1a;
+    color: #ffd966;
+}
+
+.difficulty-hard {
+    background: #5a1e1e;
+    color: #ff8080;
+}
+
+.problem-card.active .difficulty-badge {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* Main content adjustment */
+.container {
+    margin-left: 300px;
+    padding-left: 2rem;
+    color: var(--text-primary, #f0f0f0);
+    background: var(--bg-main, #121212);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .problems-sidebar {
+        width: 250px;
+    }
+    
+    .container {
+        margin-left: 250px;
+    }
+}
+
+@media (max-width: 576px) {
+    .problems-sidebar {
+        position: fixed;
+        left: -300px;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .problems-sidebar.open {
+        left: 0;
+    }
+
+    .container {
+        margin-left: 0;
+    }
+}
+
+/* Optional: Smooth scrollbar */
+.problems-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.problems-sidebar::-webkit-scrollbar-thumb {
+    background-color: #444;
+    border-radius: 3px;
+}

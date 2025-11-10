@@ -38,8 +38,8 @@
         $user = $db->get_data_by_table('users', ['username' => $username]);
         if ($user && isset($user['id'])) {
             $_SESSION['id'] = $user['id'];
-            $_SESSION['id'] = $fullname;
-            $_SESSION['id'] = $username;
+            $_SESSION['fullname'] = $fullname;
+            $_SESSION['username'] = $username;
         }
         $ret = ['error' => 0, 'message' => 'Successfully registered!'];
     } else {

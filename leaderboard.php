@@ -38,7 +38,7 @@
         $startIndex = ($currentPage - 1) * $reytingsPerPage;
         $visibleReytings = array_slice($reytings, $startIndex, $reytingsPerPage);
         ?>
-
+ 
         <h2 class="mb-1">To'liq reytinglar</h2>
 
         <!-- 🏆 Top 3 blok -->
@@ -52,8 +52,16 @@
                     <?= strtoupper(substr($reytings[0]['user'], 0, 2)) ?>
                 </div>
                 <h3><?= htmlspecialchars($reytings[0]['user']) ?></h3>
-                <div class="stat-value"><?= intval($reytings[0]['total_score']) ?></div>
-                <div class="text-secondary">Ball</div>
+                <div style="display: flex; gap: 20px; align-items: center; justify-content: center;">
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[0]['total_score']) ?></div>
+                        <div class="text-secondary">Ball</div>
+                    </div>
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[0]['solved']) ?></div>
+                        <div class="text-secondary">Yechilgan</div>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
 
@@ -65,8 +73,16 @@
                     <?= strtoupper(substr($reytings[1]['user'], 0, 2)) ?>
                 </div>
                 <h3><?= htmlspecialchars($reytings[1]['user']) ?></h3>
-                <div class="stat-value"><?= intval($reytings[1]['total_score']) ?></div>
-                <div class="text-secondary">Ball</div>
+                <div style="display: flex; gap: 20px; align-items: center; justify-content: center;">
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[1]['total_score']) ?></div>
+                        <div class="text-secondary">Ball</div>
+                    </div>
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[1]['solved']) ?></div>
+                        <div class="text-secondary">Yechilgan</div>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
 
@@ -78,8 +94,16 @@
                     <?= strtoupper(substr($reytings[2]['user'], 0, 2)) ?>
                 </div>
                 <h3><?= htmlspecialchars($reytings[2]['user']) ?></h3>
-                <div class="stat-value"><?= intval($reytings[2]['total_score']) ?></div>
-                <div class="text-secondary">Ball</div>
+                <div style="display: flex; gap: 20px; align-items: center; justify-content: center;">
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[2]['total_score']) ?></div>
+                        <div class="text-secondary">Ball</div>
+                    </div>
+                    <div>
+                        <div class="stat-value"><?= intval($reytings[2]['solved']) ?></div>
+                        <div class="text-secondary">Yechilgan</div>
+                    </div>
+                </div>
             </div>
             <?php endif; ?>
         </div>
@@ -129,24 +153,23 @@
 
         <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1rem;">
             <?php if ($currentPage > 1): ?>
-                <a href="?id=<?= $problem_id ?>&page=<?= $currentPage - 1; ?>" class="btn btn-secondary">← Previous</a>
+                <a href="?page=<?= $currentPage - 1; ?>" class="btn btn-secondary">← Previous</a>
             <?php else: ?>
                 <button class="btn btn-secondary" disabled>← Previous</button>
             <?php endif; ?>
 
-            <!-- Sahifa raqamlari (10 ta ko‘rinadi) -->
             <?php
             $startPage = max(1, $currentPage - 4);
             $endPage = min($totalPages, $startPage + 9);
             for ($i = $startPage; $i <= $endPage; $i++): ?>
-                <a href="?id=<?= $problem_id ?>&page=<?= $i; ?>" class="btn <?= ($i === $currentPage) ? 'btn-primary' : 'btn-secondary'; ?>">
+                <a href="?page=<?= $i; ?>" class="btn <?= ($i === $currentPage) ? 'btn-primary' : 'btn-secondary'; ?>">
                     <?= $i; ?>
                 </a>
             <?php endfor; ?>
 
             <!-- Next tugmasi -->
             <?php if ($currentPage < $totalPages): ?>
-                <a href="?id=<?= $problem_id ?>&page=<?= $currentPage + 1; ?>" class="btn btn-secondary">Next →</a>
+                <a href="?page=<?= $currentPage + 1; ?>" class="btn btn-secondary">Next →</a>
             <?php else: ?>
                 <button class="btn btn-secondary" disabled>Next →</button>
             <?php endif; ?>
@@ -155,29 +178,6 @@
     <!-- Footer -->
     <?php include_once 'includes/footer.php';?>
     <script src="assets/js/change_style.js"></script>
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            new DataTable('#leaderboard', {
-                language: {
-                    search: "Qidiruv:",
-                    lengthMenu: "Ko‘rsat _MENU_ ta yozuv",
-                    info: "_START_ dan _END_ gacha, jami _TOTAL_ ta",
-                    paginate: {
-                        first: "Birinchi",
-                        last: "Oxirgi",
-                        next: "Keyingi",
-                        previous: "Oldingi"
-                    },
-                    zeroRecords: "Hech narsa topilmadi"
-                },
-                pageLength: 10, 
-                responsive: true,
-                order: [[4, 'desc']]
-            });
-        });
-    </script>
+    
 </body>
 </html>
