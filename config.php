@@ -214,6 +214,44 @@ class Database{
         }
         return $data;
     }
+    public function get_contest_reyting_by_user($contest_id){
+       
+        $sql = "SELECT 
+            u.id AS user_id,
+            u.fullname,
+
+            SUM(CASE WHEN cr.solved > 0 THEN 1 ELSE 0 END) AS solved_count,
+
+            SUM(COALESCE(cr.score, 0)) AS total_score
+
+        FROM contest_register reg
+        JOIN users u 
+            ON u.id = reg.user_id
+
+        LEFT JOIN contest_reyting cr
+            ON cr.user_id = reg.user_id
+            AND cr.contest_id = reg.contest_id
+
+        WHERE reg.contest_id = " . intval($contest_id) . "  
+
+        GROUP BY u.id
+
+        ORDER BY 
+            solved_count DESC,
+            total_score ASC;
+        ";
+        $result = $this -> query($sql);
+        $data = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $data[] = $row;
+        }
+        return $data;
+    }
+    public function check_problem_solved($user_id, $problem_id, $contest_id){
+        $sql = "SELECT * FROM contest_reyting WHERE user_id = ".intval($user_id)." AND problem_id = ".intval($problem_id)." AND contest_id = ".intval($contest_id);
+        $fetch = mysqli_fetch_assoc($this->query($sql));
+        return $fetch;
+    }
 
 }
 

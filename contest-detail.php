@@ -33,6 +33,8 @@
        'contest_id' => $contest_id, 
        'user_id' => $user_id
    ]);
+
+   $reying_users = $db->get_contest_reyting_by_user($contest_id);
 ?>
 <!DOCTYPE html>
 <html lang="uz">
@@ -145,6 +147,7 @@
         <div class="contest-tabs" style="margin-top: 2rem;">
             <button class="contest-tab active" onclick="switchTab('problems')">Masalalar</button>
             <button class="contest-tab" onclick="switchTab('participants')">Qatnashuvchilar</button>
+            <button class="contest-tab" onclick="switchTab('results')">Natijalar</button>
         </div>
 
         <div id="problemsTab" class="tab-content active">
@@ -233,13 +236,143 @@
                 </table>
             </div>
         </div>
-        
+        <!-- Natijalar Tab Content - Mavjud resultsTab div ichiga qo'ying -->
+        <div id="resultsTab" class="tab-content">
+            <h2 class="mb-1">Natijalar jadvali</h2>
+            
+            <?php if ($actual_status < 1 || !$is_registered): ?>
+                <div class="card" style="text-align: center; padding: 2rem;">
+                    <h3>Natijalarni ko'rish uchun</h3>
+                    <p class="text-secondary">
+                        <?php if ($actual_status < 1): ?>
+                            Musobaqa boshlanishini va ro'yxatdan o'tishingizni kutamiz
+                        <?php else: ?>
+                            Musobaqadan ro'yxatdan o'ting
+                        <?php endif; ?>
+                    </p>
+                </div>
+            <?php else: ?>
+                <div class="table-container" style="overflow-x: auto;">
+                    <table style="min-width: 800px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px; position: sticky; left: 0; background: var(--bg-primary); z-index: 10;">#</th>
+                                <th style="width: 200px; position: sticky; left: 50px; background: var(--bg-primary); z-index: 10;">Foydalanuvchi</th>
+                                <?php foreach ($contest_problems as $index=>$problem): ?>
+                                    <th style="width: 120px; text-align: center;">
+                                        <?= chr(65 + $index) ?>
+                                    </th>
+                                <?php endforeach; ?>
+                                <th style="width: 100px; text-align: center;">Jami Ball</th>
+                                <th style="width: 100px; text-align: center;">Ishlangan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php 
+                            $rank = 1;
+                            foreach ($reying_users as $user): 
+                                $total_score = $user['total_score'];
+                                $solved_count = $user['solved_count'];
+                            ?>
+                            <tr>
+                                <td style="position: sticky; left: 0; background: var(--bg-primary); z-index: 9;">
+                                    <strong style="color: var(--primary);"><?= $rank++ ?></strong>
+                                </td>
+                                <td style="position: sticky; left: 50px; background: var(--bg-primary); z-index: 9;">
+                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                                            <?= strtoupper(substr($user['fullname'], 0, 2)) ?>
+                                        </div>
+                                        <strong><?= htmlspecialchars($user['fullname']) ?></strong>
+                                    </div>
+                                </td>
+                                <?php foreach ($contest_problems as $idx => $problem): 
+                                    $check_solved_problem = $db->check_problem_solved($user['user_id'], $problem['id'], $contest_id);
+                                    
+                                    if ($check_solved_problem == NULL) {
+                                        $status = 'not_attempted';
+                                        $attempts = 0;
+                                    } elseif ($check_solved_problem['solved'] == 0) {
+                                        $status = 'attempted';
+                                        $attempts = $check_solved_problem['attempted'];
+                                    } else {
+                                        $status = 'accepted';
+                                        $attempts = $check_solved_problem['attempted'];
+                                    }
+                                ?>
+                                    <td style="text-align: center; padding: 0;">
+                                        <?php
+                                            $cell_color = 'transparent';
+                                            $text_content = '—';
+                                            $attempts_text = '';
+                                            
+                                            if ($status == 'accepted') {
+                                                $cell_color = 'rgba(34, 197, 94, 0.15)';
+                                                $text_content = "✓";
+                                                $attempts_text = $attempts > 0 ? "($attempts)" : '';
+                                            } elseif ($status == 'attempted') {
+                                                $cell_color = 'rgba(239, 68, 68, 0.15)';
+                                                $text_content = '×';
+                                                $attempts_text = $attempts > 0 ? "($attempts)" : '';
+                                            }
+                                        ?>
+                                        <div style="background: <?= $cell_color ?>; padding: 0.75rem; min-height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                            <span style="font-size: 1.5rem; font-weight: bold;">
+                                                <?= $text_content ?>
+                                            </span>
+                                            <?php if ($attempts_text): ?>
+                                                <span style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem;">
+                                                    <?= $attempts_text ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                <?php endforeach; ?>
+                                <td style="text-align: center;">
+                                    <strong style="color: var(--primary); font-size: 1.1rem;">
+                                        <?= $total_score ?>
+                                    </strong>
+                                </td>
+                                <td style="text-align: center;">
+                                    <strong style="color: #22c55e;">
+                                        <?= $solved_count ?> / <?= count($contest_problems) ?>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
+                    <h4 style="margin-bottom: 0.75rem;">Izoh:</h4>
+                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 30px; height: 30px; background: rgba(34, 197, 94, 0.15); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">✓</div>
+                            <span>To'g'ri ishlangan</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 30px; height: 30px; background: rgba(239, 68, 68, 0.15); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">×</div>
+                            <span>Xato urinish</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <div style="width: 30px; height: 30px; background: transparent; border: 1px solid var(--border); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center;">—</div>
+                            <span>Urinish yo'q</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                        Qavs ichidagi raqamlar urinishlar sonini bildiradi
+                    </p>
+                </div>
+            <?php endif; ?>
+        </div>
     </div>
     
     <?php include_once 'includes/footer.php';?>
   
     <script src="assets/js/change_style.js"></script>
     <script>
+        // 
         function openContestProblems(problemId, contestId) {
             const form = document.createElement('form');
             form.method = 'POST';

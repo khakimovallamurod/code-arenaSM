@@ -61,7 +61,7 @@
                 
                 <button type="submit" class="problem-card <?= $isActive ?>">
                     <div class="problem-card-header">
-                        <span class="problem-number">Masala <?= $index + 1 ?></span>
+                        <span class="problem-number"><?= chr(65 + $index)?></span>
                         <span class="problem-status status-<?= $status ?>"><?= $statusIcon ?></span>
                     </div>
                     <div class="problem-title"><?= htmlspecialchars($prob['title']) ?></div>

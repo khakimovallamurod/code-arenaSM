@@ -99,23 +99,24 @@
         $difficulty = $problem['difficulty'];
         $score = 0;
         switch ($difficulty) {
-            case 'beginner':$score = 100;break;
+            case 'beginner':$score = 200;break;
             case 'easy':$score = 200;break;
-            case 'medium':$score = 300;break;
-            case 'hard':$score = 400;break;
-            case 'expert':$score = 500;break;
+            case 'medium':$score = 200;break;
+            case 'hard':$score = 200;break;
+            case 'expert':$score = 200;break;
             default:$score = 0;break;
         }
         $reyting_arr = [
             "user_id" => $user_id,
             "problem_id" => $cn_problem_id,
             "contest_id" => $contest_id,
-            "score" => $score,             
+            "score" => 0,
             "attempted" => 1,           
             "solved" => 0,           
         ];
         if ($result['status'] == "Accept"){
             $reyting_arr['solved'] += 1;
+            $reyting_arr['score'] += $score;
         }
         if ($user_reyting == NULL){
             $insert_reyting  = $db->insert("contest_reyting", $reyting_arr);
@@ -123,11 +124,17 @@
             $reyting_id = $user_reyting['id'];
             $attempted = $user_reyting['attempted'] += 1;
             $solved = max($reyting_arr['solved'], $user_reyting['solved']);
+            if ($solved == 1){
+                $score = $score + $attempted * 50;
+            }else{
+                $score = $user_reyting['score'];
+            }
             $db->update(
                 'contest_reyting', 
                 [
                     'solved'=>$solved,
-                    'attempted'=>$attempted
+                    'attempted'=>$attempted,
+                    'score'=>$score
                 ], 
                 "id = $reyting_id"
             );
