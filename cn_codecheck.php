@@ -1,8 +1,13 @@
 <?php
     include_once 'config.php';
     $db = new Database();
-    $user_id  = intval($_POST['user_id']);
-    $cn_problem_id = intval($_POST['problem_id']);
+    $code_attempt_id = $_POST['attempt_id'];
+    $attempt_data = $db->get_data_by_table('cncode_attempts', ['id'=>$code_attempt_id]);
+    $user_id  = $attempt_data['user_id'];
+    $cn_problem_id = $attempt_data['problem_id'];
+    $code = $attempt_data['code'];
+    $language = $attempt_data['language'];
+    $contest_id = $attempt_data['contest_id'];
     $tests = $db->get_data_by_table_all('contest_tests', "WHERE cn_problem_id = '$cn_problem_id'");
 
     function run_code($language, $code, $stdin) {
@@ -75,10 +80,7 @@
         ];
     }
     
-    
-    $language = $_POST['language'];
-    $contest_id = intval($_POST['contest_id']);
-    $code = $_POST['code'];
+
     $result = check_problem($language, $code, $tests);
     $arr = [
         "user_id"      => $user_id,       

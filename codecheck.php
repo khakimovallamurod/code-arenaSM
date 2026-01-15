@@ -1,10 +1,14 @@
 <?php
     include_once 'config.php';
     $db = new Database();
-    $user_id  = $_POST['user_id'];
-    $problem_id = $_POST['problem_id'];
+    $attempt_id = $_POST['attempt_id'];
+    $attempt_data = $db->get_data_by_table('code_attempts', ['id'=>$attempt_id]);
+    $user_id  = $attempt_data['user_id'];
+    $problem_id = $attempt_data['problem_id'];
+    $code = $attempt_data['code'];
+    $language = $attempt_data['language'];
     $tests = $db->get_data_by_table_all('tests', "WHERE problem_id = '$problem_id'");
-
+    
     function run_code($language, $code, $stdin) {
         $url = "http://api.sampc.uz/api/v2/execute";
 
@@ -77,8 +81,7 @@
     
     
     $problem_id_str = str_pad($problem_id, 4, '0', STR_PAD_LEFT);
-    $language = $_POST['language'];
-    $code = $_POST['code'];
+   
     $result = check_problem($problem_id_str, $language, $code, $tests);
     $arr = [
         "user_id"      => $user_id,       

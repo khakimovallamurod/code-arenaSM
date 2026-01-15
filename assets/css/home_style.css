@@ -8,6 +8,10 @@
     box-shadow: 0 20px 60px var(--shadow);
     position: relative;
     overflow: hidden;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .hero-university::before {
@@ -35,6 +39,8 @@
 .hero-content {
     position: relative;
     z-index: 1;
+    max-width: 1200px;
+    width: 100%;
 }
 
 .hero-badge {
@@ -51,7 +57,7 @@
 }
 
 .hero-title {
-    font-size: 3rem;
+    font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 800;
     color: #4f4e4d;
     margin-bottom: 1rem;
@@ -59,16 +65,27 @@
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: clamp(1rem, 2.5vw, 1.3rem);
     color: var(--text-secondary);
     margin-bottom: 2rem;
     max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
 }
 
 .hero-stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
     margin-top: 3rem;
 }
 
@@ -78,7 +95,7 @@
     background: rgba(99, 102, 241, 0.05);
     border-radius: 1rem;
     border: 1px solid rgba(99, 102, 241, 0.1);
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .hero-stat-item:hover {
@@ -88,17 +105,19 @@
 }
 
 .hero-stat-number {
-    font-size: 2.5rem;
+    font-size: clamp(2rem, 4vw, 2.5rem);
     font-weight: bold;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: block;
+    line-height: 1;
 }
 
 .hero-stat-label {
     color: var(--text-secondary);
     margin-top: 0.5rem;
-    font-size: 1rem;
+    font-size: clamp(0.9rem, 2vw, 1rem);
 }
 
 .section-header {
@@ -106,10 +125,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .section-title {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 700;
     position: relative;
     padding-left: 1rem;
@@ -134,7 +155,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .view-all-link:hover {
@@ -151,9 +172,9 @@
 .quick-nav-card {
     background: var(--bg-secondary);
     border-radius: 1rem;
-    padding: 2rem;
+    padding: 2rem 1.5rem;
     border: 1px solid var(--border);
-    transition: all 0.4s;
+    transition: all 0.4s ease;
     cursor: pointer;
     text-decoration: none;
     color: var(--text);
@@ -174,7 +195,7 @@
     height: 100%;
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     opacity: 0;
-    transition: opacity 0.4s;
+    transition: opacity 0.4s ease;
 }
 
 .quick-nav-card:hover::before {
@@ -188,15 +209,16 @@
 }
 
 .quick-nav-icon {
-    font-size: 3rem;
+    font-size: clamp(2.5rem, 5vw, 3rem);
     margin-bottom: 1rem;
     position: relative;
     z-index: 1;
+    display: inline-block;
 }
 
 .quick-nav-card h3 {
     margin-bottom: 0.5rem;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 2.5vw, 1.5rem);
     position: relative;
     z-index: 1;
 }
@@ -205,6 +227,8 @@
     color: var(--text-secondary);
     position: relative;
     z-index: 1;
+    font-size: clamp(0.9rem, 1.8vw, 1rem);
+    line-height: 1.5;
 }
 
 .featured-contest {
@@ -238,7 +262,7 @@
     transform: translateY(-50%);
     font-size: 1.5rem;
     opacity: 0;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
 }
 
 .problem-card-enhanced:hover::after {
@@ -254,32 +278,170 @@
     margin-bottom: 3rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .university-banner-icon {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 2rem;
-    }
-
-    .hero-subtitle {
-        font-size: 1rem;
-    }
-
-    .hero-stats {
-        grid-template-columns: 1fr;
-    }
+.university-banner-content {
+    flex: 1;
+    min-width: 250px;
 }
 
+/* Animatsiyalar */
 @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    0%, 100% { 
+        transform: translateY(0px); 
+    }
+    50% { 
+        transform: translateY(-20px); 
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
 }
 
 .floating {
     animation: float 3s ease-in-out infinite;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.pulse-hover:hover {
+    animation: pulse 0.5s ease-in-out;
+}
+
+/* Mobile Responsive Design */
+@media (max-width: 768px) {
+    .hero-university {
+        padding: 2rem 1rem;
+        border-radius: 0.75rem;
+    }
+    
+    .hero-badge {
+        padding: 0.4rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .hero-stat-item {
+        padding: 1rem;
+    }
+    
+    .quick-nav-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .university-banner {
+        padding: 1rem;
+        gap: 1rem;
+        text-align: center;
+        justify-content: center;
+    }
+    
+    .university-banner-content {
+        min-width: 100%;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .hero-buttons .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem;
+        text-align: left;
+        padding: 0 0.5rem;
+    }
+    
+    .quick-nav-card {
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* Tablet Responsive */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .quick-nav-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Smooth transitions for all interactive elements */
+.btn, .quick-nav-card, .hero-stat-item, .problem-card-enhanced {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Loading animation for stats */
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+.hero-stat-number:empty::after {
+    content: '...';
+    background: linear-gradient(90deg, 
+        rgba(99, 102, 241, 0.1) 25%, 
+        rgba(99, 102, 241, 0.3) 50%, 
+        rgba(99, 102, 241, 0.1) 75%);
+    background-size: 200% auto;
+    animation: shimmer 1.5s infinite linear;
+    display: inline-block;
+    width: 60px;
+    height: 1em;
+    border-radius: 4px;
 }

@@ -12,7 +12,7 @@
    $db = new Database();
    $solutions = $db->get_data_by_table("contest_problems",['contest_id'=>$contest_id, 'id'=>$problem_id]);
    $test_examples = $db->get_data_by_table_all('contest_tests', " where cn_problem_id=$problem_id LIMIT 2");
-   $attempts = $db->get_contest_attempts_by_user($user_id, $problem_id, $contest_id);
+   
    
    $contest_problems = $db->get_data_by_table_all('contest_problems', " where contest_id=$contest_id ORDER BY id ASC");
 ?>
@@ -25,7 +25,8 @@
     <script src="assets/js/change_style.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+
 </head>
 <body>
     <!-- Navbar -->
@@ -146,97 +147,11 @@
                 <!-- Submission History -->
                 <div class="code-section" style="margin-top: 1rem;">
                     <h3 class="mb-1">Oxirgi urinishlar</h3>
-                    <?php if(empty($attempts)){ ?>
-                        <div class="submission-item">
-                            <span><strong>Hali hech qanday urinish yo'q 😌</strong></span>
-                        </div>
-                    <?php } ?>
-                    <?php
-                    $attemptsPerPage = 4;
-
-                    $problem_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-                    $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                    if ($currentPage < 1) $currentPage = 1;
-
-                    $totalAttempts = count($attempts);
-                    $totalPages = ceil($totalAttempts / $attemptsPerPage);
-
-                    $startIndex = ($currentPage - 1) * $attemptsPerPage;
-
-                    $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
-                    ?>
-
-                    <!-- Attemptlar ro'yxati -->
-                    <div>
-                    <?php foreach ($visibleAttempts as $attempt): ?>
+                    <div id="contestattemptsTableContainer">
                         <?php 
-                            $status = $attempt['status'];
-                            $statusClass = 'status-badge ';
-                            
-                            if($status === 'Accept') {
-                                $statusClass .= 'status-accepted';
-                            } elseif(strpos($status, 'Wrong Answer') !== false) {
-                                $statusClass .= 'status-wrong';
-                            } elseif(strpos($status, 'Runtime Error') !== false) {
-                                $statusClass .= 'status-wrong';
-                            } else {
-                                $statusClass .= 'status-error';
-                            }
+                        // Bu yerda attempts-table.php include qilinadi
+                        include_once 'cn-attempts-table.php'; 
                         ?>
-                        <div class="submission-item" 
-                            style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #eee;">
-                            <div style="display: flex; align-items: center; gap: 0.8rem;">
-                                <span class="<?= $statusClass ?>" 
-                                    style="align-items: center; display: flex; justify-content: center; min-width: 100px;">
-                                    <?php if ($status === 'Accept'): ?>
-                                        <?= htmlspecialchars($status); ?>
-                                    <?php else: ?>
-                                        <?= htmlspecialchars($status . " (test " . ($attempt['tests_passed']) . ")"); ?>
-                                    <?php endif; ?>
-                                </span>
-                            </div>
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-                                <span class="lang-badge" 
-                                    style="padding: 4px 10px; border-radius: 6px; font-size: 14px;">
-                                    <?= htmlspecialchars($attempt['language']); ?>
-                                </span>
-                                <span class="metric-value" style="font-weight: 500;">
-                                    <?= intval($attempt['runTime']); ?> ms
-                                </span>
-                                <span class="metric-value" style="font-weight: 500;">
-                                    <?= intval($attempt['memory']/1024); ?> KB
-                                </span>
-                                <span class="date-text" style="font-size: 14px;">
-                                    <?= date('d.m.Y H:i', strtotime($attempt['created_at'])); ?>
-                                </span>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                    </div>
-
-                    <!-- Pagination -->
-                    <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem; margin-bottom: 3rem;">
-                        <!-- Previous tugmasi -->
-                        <?php if ($currentPage > 1): ?>
-                            <a href="?id=<?= $problem_id ?>&page=<?= $currentPage - 1; ?>" class="btn btn-secondary">← Previous</a>
-                        <?php else: ?>
-                            <button class="btn btn-secondary" disabled>← Previous</button>
-                        <?php endif; ?>
-
-                        <!-- Sahifa raqamlari -->
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <a href="?id=<?= $problem_id ?>&page=<?= $i; ?>" 
-                            class="btn <?= ($i === $currentPage) ? 'btn-primary' : 'btn-secondary'; ?>">
-                            <?= $i; ?>
-                            </a>
-                        <?php endfor; ?>
-
-                        <!-- Next tugmasi -->
-                        <?php if ($currentPage < $totalPages): ?>
-                            <a href="?id=<?= $problem_id ?>&page=<?= $currentPage + 1; ?>" class="btn btn-secondary">Next →</a>
-                        <?php else: ?>
-                            <button class="btn btn-secondary" disabled>Next →</button>
-                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -246,7 +161,7 @@
     <!-- Footer -->
     <?php include_once 'includes/footer.php';?>
     
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/codeeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
@@ -268,98 +183,246 @@
             document.body.appendChild(form);
             form.submit();
         }
+
         function submitAttempt(event) {
-    event.preventDefault();
-    const user_id = document.querySelector("[name='user_id']").value;
-    const problem_id = document.querySelector("[name='problem_id']").value;
-    const contest_id = document.querySelector("[name='contest_id']").value;
-    const language = document.querySelector("[name='language']").value;
-    const code = editor.getValue();
+            event.preventDefault();
+            
+            const user_id = document.querySelector("[name='user_id']").value;
+            const problem_id = document.querySelector("[name='problem_id']").value;
+            const contest_id = document.querySelector("[name='contest_id']").value;
+            const language = document.querySelector("[name='language']").value;
+            const code = editor.getValue();
+            
+            const submitBtn = document.getElementById('submitBtn');
 
-    if (submitBtn) {
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending...';
-    }
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Sending...';
+            }
 
-    const formData = new FormData();
-    formData.append("user_id", user_id);
-    formData.append("problem_id", problem_id);
-    formData.append("contest_id", contest_id);
-    formData.append("language", language);
-    formData.append("code", code);
+            const formData = new FormData();
+            formData.append("user_id", user_id);
+            formData.append("problem_id", problem_id);
+            formData.append("contest_id", contest_id);
+            formData.append("language", language);
+            formData.append("code", code);
 
-    fetch("cn_codecheck.php", {
-        method: "POST",
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) throw new Error("Serverdan noto'g'ri javob qaytdi");
-        return response.json();
-    })
-    .then(data => {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit';
+            fetch("contest-problemadd.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Serverdan noto'g'ri javob qaytdi");
+                return response.json();
+            })
+            .then(data => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit';
+                }
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+
+                Toast.fire({
+                    icon: data.success ? 'success' : 'error',
+                    title: data.message
+                });
+                
+                // Agar muvaffaqiyatli bo'lsa
+                if(data.success && data.attempt_id){                    
+                    // Judge jarayonini boshlaymiz
+                    startJudgeProcess(data.attempt_id, language, problem_id, contest_id);
+                }
+            })
+            .catch(error => {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Submit';
+                }
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+
+                Toast.fire({
+                    icon: 'error',
+                    title: "❌ So'rovda xatolik: " + error.message
+                });
+            });
         }
 
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2500,
-            timerProgressBar: true
-        });
+        // Judge jarayonini boshlash
+        function startJudgeProcess(attempt_id, language, problem_id, contest_id) {
+            // 1. Avval attempts jadvalini yuklaymiz (yangi attempt ko'rinadi)
+            reloadAttemptsTable(1, problem_id, contest_id, () => {
+                // 2. Jadval yuklangandan keyin birinchi attemptni "Running..." ga o'zgartiramiz
+                updateFirstAttemptToRunning(language);
+            });
+            
+            // 3. Judge API ga so'rov yuboramiz
+            const formData = new URLSearchParams();
+            formData.append('attempt_id', attempt_id);
+            
+            fetch("cn_codecheck.php", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error("Judge serverdan xatolik");
+                return response.json();
+            })
+            .then(result => {                
+                // 4. Judge tugagandan keyin attempts jadvalini qayta yuklaymiz
+                if(result.success) {
+                    // 500ms kutib jadvalini yangilaymiz (animatsiya uchun)
+                    setTimeout(() => {
+                        reloadAttemptsTable(1, problem_id, contest_id);
+                    }, 500);
+                } else {
+                    console.error("❌ Judge xatolik:", result.message);
+                    // Xatolik bo'lsa ham jadvalni yangilaymiz
+                    reloadAttemptsTable(1, problem_id, contest_id);
+                }
+            })
+            .catch(err => {
+                console.error("❌ Judge xatolik:", err);
+                
+                setTimeout(() => {
+                    reloadAttemptsTable(1, problem_id, contest_id);
+                }, 500);
+                
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
 
-        Toast.fire({
-            icon: data.success ? 'success' : 'error',
-            title: data.message
-        });
-
-        // 🔥 POST orqali qayta yuklaymiz
-        if (data.success) {
-            setTimeout(() => {
-                const form = document.createElement("form");
-                form.method = "POST";
-                form.action = window.location.href; // shu sahifaga qaytadi
-
-                const input1 = document.createElement("input");
-                input1.type = "hidden";
-                input1.name = "problemid";
-                input1.value = problem_id;
-
-                const input2 = document.createElement("input");
-                input2.type = "hidden";
-                input2.name = "contestid";
-                input2.value = contest_id;
-
-                form.appendChild(input1);
-                form.appendChild(input2);
-                document.body.appendChild(form);
-                form.submit(); // POST orqali qayta yuklaydi
-            }, 2000);
+                Toast.fire({
+                    icon: 'error',
+                    title: "❌ Judge jarayonida xatolik yuz berdi"
+                });
+            });
         }
-    })
-    .catch(error => {
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Submit';
+
+        function updateFirstAttemptToRunning(language) {
+            const listContainer = document.getElementById("attemptsListContainer");
+            
+            if(!listContainer) {
+                console.error("❌ attemptsListContainer topilmadi");
+                return;
+            }
+            
+            const firstAttempt = listContainer.querySelector(".submission-item");
+            
+            if(!firstAttempt) {
+                console.error("❌ Birinchi attempt topilmadi");
+                return;
+            }
+                        
+            // Birinchi attemptni "Running..." ga o'zgartiramiz
+            const currentTime = new Date().toLocaleString('en-GB', { 
+                day: '2-digit', 
+                month: '2-digit', 
+                year: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            }).replace(',', '');
+            
+            firstAttempt.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.8rem;">
+                    <span class="status-badge status-error" 
+                        style="align-items: center; display: flex; justify-content: center; min-width: 100px;">
+                        <span class="loading-spinner"></span> Running...
+                    </span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
+                    <span class="lang-badge" 
+                        style="padding: 4px 10px; border-radius: 6px; font-size: 14px;">
+                        ${language}
+                    </span>
+                    <span class="metric-value" style="font-weight: 500;">
+                        <span class="loading-dots">...</span> ms
+                    </span>
+                    <span class="metric-value" style="font-weight: 500;">
+                        <span class="loading-dots">...</span> KB
+                    </span>
+                    <span class="date-text" style="font-size: 14px;">
+                        ${currentTime}
+                    </span>
+                </div>
+            `;
         }
 
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 2500,
-            timerProgressBar: true
-        });
+        // Attempts jadvalini reload qilish funksiyasi
+        function reloadAttemptsTable(page = 1, problem_id = null, contest_id = null, callback = null) {
+            // Agar problem_id va contest_id berilmagan bo'lsa, formdan olamiz
+            if(!problem_id) {
+                problem_id = document.querySelector("[name='problem_id']").value;
+            }
+            if(!contest_id) {
+                contest_id = document.querySelector("[name='contest_id']").value;
+            }
+                        
+            // Loading holatini ko'rsatish
+            const container = document.getElementById('contestattemptsTableContainer');
+            if(container) {
+                container.classList.add('loading');
+            }
+            
+            // POST orqali yuborish
+            const formData = new URLSearchParams();
+            formData.append('problemid', problem_id);
+            formData.append('contestid', contest_id);
+            formData.append('page', page);
+            
+            fetch('cn-attempts-table.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: formData
+            })
+                .then(response => response.text())
+                .then(html => {
+                    if(container) {
+                        container.innerHTML = html;
+                        container.classList.remove('loading');                        
+                        // Callback funksiyani chaqirish (agar mavjud bo'lsa)
+                        if(callback && typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Attempts jadvalini yuklashda xatolik:', error);
+                    if(container) {
+                        container.classList.remove('loading');
+                    }
+                });
+        }
 
-        Toast.fire({
-            icon: 'error',
-            title: "❌ So'rovda xatolik: " + error.message
-        });
-    });
-}
 
+        // Pagination uchun sahifa yuklovchi funksiya
+        function loadAttemptsPage(page) {
+            const problem_id = document.querySelector("[name='problem_id']").value;
+            const contest_id = document.querySelector("[name='contest_id']").value;
+            reloadAttemptsTable(page, problem_id, contest_id);
+        }
     </script>
 </body>
 </html>
