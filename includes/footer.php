@@ -8,4 +8,4 @@
                 <a href="https://github.com/khakimovallamurod">GitHub</a>
             </div>
         </div>
-    </footer>
+    </footer> 
