@@ -19,6 +19,8 @@
     <title>SamCoding</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+    <link rel="stylesheet" href="assets/css/styles-light.css">
+    
     <style>
         .loading-spinner {
     display: inline-block;
