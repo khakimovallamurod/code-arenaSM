@@ -11,7 +11,7 @@
     $tests = $db->get_data_by_table_all('contest_tests', "WHERE cn_problem_id = '$cn_problem_id'");
 
     function run_code($language, $code, $stdin) {
-        $url = "http://api.sampc.uz/api/v2/execute";
+        $url = "https://api.sampc.uz/api/v2/execute";
 
         $payload = [
             "language" => $language,

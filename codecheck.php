@@ -10,7 +10,7 @@
     $tests = $db->get_data_by_table_all('tests', "WHERE problem_id = '$problem_id'");
     
     function run_code($language, $code, $stdin) {
-        $url = "http://api.sampc.uz/api/v2/execute";
+        $url = "https://api.sampc.uz/api/v2/execute";
 
         $payload = [
             "language" => $language,
