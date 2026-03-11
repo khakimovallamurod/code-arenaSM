@@ -1,128 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SamCoding</title>
-    <link rel="stylesheet" href="assets/css/home_style.css">
-    <link rel="stylesheet" href="assets/css/styles-light.css">
-
+    <title>SamCoding | SamDU Algoritmlash Platformasi</title>
+    <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/home_style.css?v=<?php echo time(); ?>">
 </head>
-<body>
+<body class="home-page">
     <!-- Navbar -->
     <?php include_once 'includes/novbar.php';?>
 
     <!-- Main Content -->
-    <div class="container">
-        <!-- Universitet Banneli -->
-        <div class="university-banner">
-            <div class="university-banner-icon">🎓</div>
-            <div>
-                <strong>SamDU dasturchilar loyihasi</strong>
-                <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
-                    Talabalarni hamkorlikda o‘rganish va musobaqaviy dasturlash orqali dunyo miqyosidagi dasturchilarga aylantirish
-                </p>
+    <main class="container home-main">
+        <section class="home-branding">
+            <span class="university-tag">Samarqand davlat universiteti</span>
+            <h1>SamCoding Platformasi</h1>
+            <p>
+                Sun'iy intellekt va raqamli texnologiyalar fakulteti talabalari uchun 
+                algoritmlarni chuqur o'rganish va amaliy ko'nikmalarni mustahkamlash maydoni.
+            </p>
+            <div class="home-hero-actions">
+                <a href="problems.php" class="btn btn-primary">Masalalarni ko'rish</a>
+                <a href="contests.php" class="btn btn-secondary">Musobaqalar</a>
             </div>
-        </div>
-        <!-- Hero Section - One Million Developers -->
-        <div class="hero-university">
-            <div class="hero-content">
-                <div class="hero-badge">🎓 SAMDU DASTURCHI LOYIHASI</div>
-                <h1 class="hero-title">Algoritmlarni birga o'rganamiz!</h1>
-                <p class="hero-subtitle">
-                    Samarqand davlat universiteti Sun'iy intellekt va raqamli texnologiyalar fakultiteti tomonidan tashkil etilgan loyihaga qo'shiling. 
-                    Bir million dasturchini tayyorlash maqsadida algoritmik fikrlashni rivojlantiring.
-                    Bizning platformamiz talabalarning muvaffaqiyatli o‘sishini ta'minlaydi.
-                </p>
-                
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                    <a href="problems.php" class="btn btn-primary">O‘rganishni boshlash</a>
-                    <a href="contests.php" class="btn btn-secondary">Musobaqaga qo‘shilish</a>
-                </div>
+        </section>
 
-                <!-- Hero Stats -->
-                <div class="hero-stats">
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Talabalar ro‘yxatdan o‘tgan</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Dasturlash masalalari</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Fakultetlar ishtirok etmoqda</div>
-                    </div>
-                    <div class="hero-stat-item">
-                        <div class="hero-stat-number">...</div>
-                        <div class="hero-stat-label">Yechilgan masalalar</div>
-                    </div>
-                </div>
+        <section class="home-stats">
+            <article class="stat-card">
+                <strong>1000+</strong>
+                <span>Talabalar</span>
+            </article>
+            <article class="stat-card">
+                <strong>200+</strong>
+                <span>Masalalar</span>
+            </article>
+            <article class="stat-card">
+                <strong>Haftalik</strong>
+                <span>Musobaqalar</span>
+            </article>
+            <article class="stat-card">
+                <strong>Live</strong>
+                <span>Reyting</span>
+            </article>
+        </section>
+
+        <section class="home-section">
+            <div class="section-header">
+                <h2>Tezkor yo'nalishlar</h2>
             </div>
-        </div>
+            <div class="quick-nav-grid">
+                <a href="problems.php" class="quick-nav-card">
+                    <span class="quick-nav-icon">📚</span>
+                    <div class="quick-nav-info">
+                        <h3>Masalalar</h3>
+                        <p>Algoritmlar va ma'lumotlar tuzilmasi bo'yicha masalalar to'plami</p>
+                    </div>
+                </a>
+                <a href="contests.php" class="quick-nav-card">
+                    <span class="quick-nav-icon">🏆</span>
+                    <div class="quick-nav-info">
+                        <h3>Musobaqalar</h3>
+                        <p>Haqiqiy vaqt rejimida bilimingizni sinab ko'ring</p>
+                    </div>
+                </a>
+                <a href="leaderboard.php" class="quick-nav-card">
+                    <span class="quick-nav-icon">📈</span>
+                    <div class="quick-nav-info">
+                        <h3>Reyting</h3>
+                        <p>Platforma foydalanuvchilari orasidagi o'rningizni ko'ring</p>
+                    </div>
+                </a>
+                <a href="profile.php" class="quick-nav-card">
+                    <span class="quick-nav-icon">👤</span>
+                    <div class="quick-nav-info">
+                        <h3>Profil</h3>
+                        <p>Shaxsiy yutuqlar va yechilgan masalalar statistikasi</p>
+                    </div>
+                </a>
+            </div>
+        </section>
+    </main>
 
-       <!-- Tezkor Navigatsiya Kartalari -->
-        <div class="section-header">
-            <h2 class="section-title">Tezkor kirish</h2>
-        </div>
-        <div class="quick-nav-grid">
-            <a href="problems.php" class="quick-nav-card">
-                <div class="quick-nav-icon floating">📚</div>
-                <h3>Masalalar kutubxonasi</h3>
-                <p>Barcha qiyinchilik darajalari va mavzular tanlangan masalalar</p>
-            </a>
-            <a href="contests.php" class="quick-nav-card">
-                <div class="quick-nav-icon floating" style="animation-delay: 0.2s;">🏆</div>
-                <h3>Musobaqalar</h3>
-                <p>Haftalik musobaqalarda ishtirok eting va mahoratingizni sinab ko‘ring</p>
-            </a>
-            <a href="leaderboard.php" class="quick-nav-card">
-                <div class="quick-nav-icon floating" style="animation-delay: 0.4s;">📊</div>
-                <h3>Reytinglar</h3>
-                <p>Rivojlanishingizni kuzatib boring va global reytingingizni ko‘ring</p>
-            </a>
-            <a href="profile.php" class="quick-nav-card">
-                <div class="quick-nav-icon floating" style="animation-delay: 0.6s;">👤</div>
-                <h3>Profilingiz</h3>
-                <p>Yutuqlaringiz, statistikalaringiz va o‘quv yo‘lingizni ko‘ring</p>
-            </a>
-        </div>
-    </div>
     <!-- Footer -->
     <?php include_once 'includes/footer.php';?>
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.card, .quick-nav-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(20px)';
-            card.style.transition = 'opacity 0.6s, transform 0.6s';
-            observer.observe(card);
-        });
-    </script>
+    
     <script src="assets/js/change_style.js"></script>
 </body>
 </html>

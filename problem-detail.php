@@ -19,7 +19,7 @@
     <title>SamCoding</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-    <link rel="stylesheet" href="assets/css/styles-light.css">
+    <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
     
     <style>
         .loading-spinner {
@@ -44,34 +44,34 @@
     
     <!-- Main Content -->
     <div class="container">
-        <h1 class="mb-2"><?=$solutions['title'] ?></h1>
+        <h1 class="mb-2 problem-title"><?=$solutions['title'] ?></h1>
         <div class="problem-layout">
             <!-- Problem Statement -->
             <div class="problem-statement">
                 <h2>Muammo bayoni</h2>
-                <p><?=$solutions['descript'] ?></p>  
-                <h3 style="margin-top: 2rem;">INPUT:</h3>  
+                <p class="problem-description"><?=$solutions['descript'] ?></p>
+                <h3 class="problem-section-title">INPUT:</h3>
                 <pre><?=$solutions['input_format'] ?></pre>
 
-                <h3 style="margin-top: 2rem;">OUTPUT:</h3>  
+                <h3 class="problem-section-title">OUTPUT:</h3>
                 <pre><?=$solutions['output_format'] ?></pre>
 
                 <?php foreach ($test_examples as $index => $test): ?>
-                <h3 style="margin-top: 2rem;">Example <?=$index+1?>:</h3>
+                <h3 class="problem-section-title">Example <?=$index+1?>:</h3>
                 <pre>
 <strong>Input</strong>:</br><?=$test['input']?>
 </br><strong>Output</strong>:</br><?=$test['output']?>
                 </pre>
                 <?php endforeach ; ?>
-                <h3 style="margin-top: 2rem;">Constraints:</h3>
+                <h3 class="problem-section-title">Constraints:</h3>
                 <ul>
                     <li><?=$solutions['constraints'] ?></li>
                 </ul>
-                <div style="margin-top: 2rem;">
+                <div class="problem-meta-tags">
                     <span class="badge badge-<?=$solutions['difficulty'] ?>"><?=ucfirst($solutions['difficulty'])?></span>
                     <span class="badge badge-<?=$solutions['category']?>"><?= ucfirst($solutions['category']) ?></span>
                 </div>
-                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 0.5rem;">
+                <div class="problem-note">
                     <strong>💡 Izoh:</strong><?=$solutions['izoh'] ?>
                 </div>
             </div>
@@ -82,24 +82,27 @@
                     <input type="hidden" name="problem_id" value="<?= $problem_id; ?>">
                     <div class="code-section">
                         <div class="editor-header">
-                            <select id="languageSelect" onchange="changeLanguage()" name="language" required>
-                                <option value="python">Python 3.10.0</option>
-                                <option value="python2">Python 2.7.18</option>
-                                <option value="java">Java 15.0.2</option>
-                                <option value="cpp">C++ (GCC 10.2.0)</option>
-                                <option value="c">C (GCC 10.2.0)</option>
-                                <option value="csharp">C# 6.12.0</option>
-                                <option value="javascript">JavaScript (Node.js 18.15.0)</option>
-                                <option value="typescript">TypeScript 5.0.3</option>
-                                <option value="php">PHP 8.2.3</option>
-                                <option value="go">Go 1.16.2</option>
-                                <option value="kotlin">Kotlin 1.8.20</option>
-                                <option value="rust">Rust 1.68.2</option>
-                                <option value="ruby">Ruby 3.0.1</option>
-                                <option value="swift">Swift 5.3.3</option>
-                                <option value="r">R (4.1.1)</option>
-                                <option value="scala">Scala 3.2.2</option>
-                            </select>
+                            <div class="editor-language">
+                                <label for="languageSelect">Dasturlash tili</label>
+                                <select id="languageSelect" onchange="changeLanguage()" name="language" required>
+                                    <option value="python">Python 3.10.0</option>
+                                    <option value="python2">Python 2.7.18</option>
+                                    <option value="java">Java 15.0.2</option>
+                                    <option value="cpp">C++ (GCC 10.2.0)</option>
+                                    <option value="c">C (GCC 10.2.0)</option>
+                                    <option value="csharp">C# 6.12.0</option>
+                                    <option value="javascript">JavaScript (Node.js 18.15.0)</option>
+                                    <option value="typescript">TypeScript 5.0.3</option>
+                                    <option value="php">PHP 8.2.3</option>
+                                    <option value="go">Go 1.16.2</option>
+                                    <option value="kotlin">Kotlin 1.8.20</option>
+                                    <option value="rust">Rust 1.68.2</option>
+                                    <option value="ruby">Ruby 3.0.1</option>
+                                    <option value="swift">Swift 5.3.3</option>
+                                    <option value="r">R (4.1.1)</option>
+                                    <option value="scala">Scala 3.2.2</option>
+                                </select>
+                            </div>
                             <div class="editor-actions">
                                 <button class="btn btn-success" id="submitBtn">Submit</button>
                             </div>
@@ -109,7 +112,7 @@
                 </form>
                 <!-- Submission History -->
                 <div class="code-section" style="margin-top: 1rem;">
-                    <h3 class="mb-1">Oxirgi urinishlar</h3>
+                    <h3 class="mb-1 attempts-title">Oxirgi urinishlar</h3>
                     
                     <!-- IMPORTANT: Bu container ichiga attempts-table.php yuklanadi -->
                     <div id="attemptsTableContainer">
@@ -285,6 +288,8 @@
                 console.error("❌ Birinchi attempt topilmadi");
                 return;
             }
+
+            const attemptNumber = firstAttempt.querySelector(".attempt-number")?.textContent?.trim() || "1";
                         
             // Birinchi attemptni "Running..." ga o'zgartiramiz
             const currentTime = new Date().toLocaleString('en-GB', { 
@@ -296,24 +301,23 @@
             }).replace(',', '');
             
             firstAttempt.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <span class="status-badge status-error" 
-                        style="align-items: center; display: flex; justify-content: center; min-width: 100px;">
+                <div class="attempt-main">
+                    <span class="attempt-number">${attemptNumber}</span>
+                    <span class="status-badge status-error">
                         <span class="loading-spinner"></span> Running...
                     </span>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-                    <span class="lang-badge" 
-                        style="padding: 4px 10px; border-radius: 6px; font-size: 14px;">
+                <div class="attempt-meta">
+                    <span class="lang-badge">
                         ${language}
                     </span>
-                    <span class="metric-value" style="font-weight: 500;">
+                    <span class="metric-value">
                         <span class="loading-dots">...</span> ms
                     </span>
-                    <span class="metric-value" style="font-weight: 500;">
+                    <span class="metric-value">
                         <span class="loading-dots">...</span> KB
                     </span>
-                    <span class="date-text" style="font-size: 14px;">
+                    <span class="date-text">
                         ${currentTime}
                     </span>
                 </div>

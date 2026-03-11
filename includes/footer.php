@@ -1,11 +1,13 @@
 <footer class="footer">
-        <div class="footer-content">
-            <p>&copy; 2026 SamCoding. Created by Students of the Faculty of Artificial Intelligence and Digital Technologies, Samarkand State University</p>
-            <div class="footer-links">
-                <a href="https://www.codewars.com/users/allamurodxakimov">Codewars</a>
-                <a href="https://www.instagram.com/allamurod_xakimov/">Instagram</a>
-                <a href="https://t.me/allamurod_2806">Contact</a>
-                <a href="https://github.com/khakimovallamurod">GitHub</a>
-            </div>
+    <div class="footer-content">
+        <div class="footer-brand">
+            <p>Samarqand davlat universiteti talabalari tomonidan yaratilgan amaliy algoritmlash platformasi.</p>
         </div>
-    </footer> 
+        <div class="footer-links">
+            <a href="https://t.me/allamurod_2806" target="_blank">Telegram</a>
+            <a href="https://instagram.com/allamurod_xakimov" target="_blank">Instagram</a>
+            <a href="https://github.com/khakimovallamurod" target="_blank">GitHub</a>
+        </div>
+        <p class="footer-copy">&copy; 2026 SamCoding. Barcha huquqlar himoyalangan.</p>
+    </div>
+</footer>

@@ -1,112 +1,123 @@
-<?php session_start(); ?>
+<?php if (!isset($_SESSION)) session_start(); ?>
+<!-- Core Dependencies -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.bootstrap5.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-  <!-- CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="assets/css/navbar.css?v=<?= time() ?>">
 
-<!-- JS: MUHIM — bu tartibni saqlang -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>         <!-- 1) jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script> <!-- agar Bootstrap 4 bo'lsa -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.6.2/js/bootstrap.min.js"></script> <!-- 2) Bootstrap JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>     <!-- 3) toastr -->
-<nav class="navbar">
-    <div class="nav-container">
-        <a href="index.php" class="logo">🎓 SamCoding</a>
-        <ul class="nav-menu">
-            <li><a href="index.php" class="active">Bosh sahifa</a></li>
-            <li><a href="problems.php">Masalalar</a></li>
-            <li><a href="contests.php">Musobaqalar</a></li>
-            <li><a href="leaderboard.php">Reyting</a></li>
+<nav class="sm-navbar">
+    <div class="sm-nav-container">
+        <!-- Logo -->
+        <a href="index.php" class="sm-logo">
+            <div class="sm-logo-icon"><i class="fas fa-terminal"></i></div>
+            <span>SamCoding</span>
+        </a>
+
+        <!-- Mobile Toggle -->
+        <button class="sm-hamburger" id="smHamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Main Nav -->
+        <ul class="sm-nav-links" id="smNavLinks">
+            <?php if (isset($_SESSION['username'])): ?>
+                <li><a href="index.php" class="sm-link <?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Asosiy</a></li>
+                <li><a href="problems.php" class="sm-link <?= basename($_SERVER['PHP_SELF']) == 'problems.php' ? 'active' : '' ?>">Masalalar</a></li>
+                <li><a href="contests.php" class="sm-link <?= basename($_SERVER['PHP_SELF']) == 'contests.php' ? 'active' : '' ?>">Musobaqalar</a></li>
+                <li><a href="leaderboard.php" class="sm-link <?= basename($_SERVER['PHP_SELF']) == 'leaderboard.php' ? 'active' : '' ?>">Reyting</a></li>
+            <?php endif; ?>
         </ul>
 
-        <div class="user-section">
+        <!-- User Section -->
+        <div class="sm-user-section">
             <?php if (isset($_SESSION['username'])): ?>
-                <div class="user-area">
-                    <?php
-                    $name = explode(' ', trim($_SESSION['fullname']));
-                    $initials = strtoupper($name[0][0] . ($name[1][0] ?? ''));
-                    ?>
-                    <button class="user-avatar" id="userBtn">
-                        <span><?= $initials ?></span>
+                <div class="sm-account-wrapper">
+                    <button class="sm-account-btn" id="smAccountBtn" type="button">
+                        <?= strtoupper(substr($_SESSION['fullname'] ?? 'U', 0, 1)) ?>
                     </button>
-                    <div class="user-panel" id="userPanel">
-                        <a href="profile.php"><i class="fa fa-user"></i> Mening profilim</a>
-                        <a href="auth/logout.php"><i class="fa fa-sign-out-alt"></i> Chiqish</a>
+                    <!-- Account Dropdown -->
+                    <div class="sm-dropdown" id="smAccountDropdown">
+                        <div style="padding: 0.75rem 1rem; border-bottom: 1px solid #f1f5f9; margin-bottom: 0.25rem;">
+                            <p style="font-weight: 700; font-size: 0.9rem; margin: 0; color: #1a202c;"><?= htmlspecialchars($_SESSION['fullname']) ?></p>
+                            <p style="color: #718096; font-size: 0.8rem; margin: 0;">@<?= htmlspecialchars($_SESSION['username']) ?></p>
+                        </div>
+                        <a href="profile.php" class="sm-dropdown-item">
+                            <i class="far fa-user"></i> Profilim
+                        </a>
+                        <a href="auth/logout.php" class="sm-dropdown-item sm-logout">
+                            <i class="fas fa-sign-out-alt"></i> Chiqish
+                        </a>
                     </div>
                 </div>
             <?php else: ?>
-                <div class="auth-links">
-                    <a href="auth/login.php"><i class="fa fa-sign-in-alt"></i> Kirish</a>
-                </div>
+                <a href="auth/login.php" class="btn btn-primary" style="padding: 0.5rem 1.2rem;">Kirish</a>
             <?php endif; ?>
         </div>
     </div>
 </nav>
 
-<!-- 🔹 CSS -->
-<style>
-
-
-.user-section {
-    display: flex;
-    align-items: center;
-}
-.auth-links a {
-    margin-left: 1rem;
-    text-decoration: none;
-    color: #6de962;
-    font-weight: 500;
-}
-.user-area {
-    position: relative;
-}
-
-.user-panel {
-    position: absolute;
-    right: -5px;
-    top: 50%;
-    transform: translateX(110%); 
-    background: #fff;
-    border: 1px solid #ddd;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    display: none;
-    flex-direction: column;
-    padding: 0.3rem 0;
-    width: 170px;
-}
-.user-panel a {
-    padding: 10px 15px;
-    text-decoration: none;
-    color: #333;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.user-panel a:hover {
-    background: #f2f2f2;
-}
-.user-panel.active {
-    display: flex;
-}
-</style>
-
-<!-- 🔹 JS: Yon panelni ochish/yopish -->
 <script>
-const userBtn = document.getElementById('userBtn');
-const userPanel = document.getElementById('userPanel');
+document.addEventListener('DOMContentLoaded', function() {
+    const smHamburger = document.getElementById('smHamburger');
+    const smNavLinks = document.getElementById('smNavLinks');
+    const smAccountBtn = document.getElementById('smAccountBtn');
+    const smAccountDropdown = document.getElementById('smAccountDropdown');
 
-if (userBtn) {
-    userBtn.addEventListener('click', () => {
-        userPanel.classList.toggle('active');
-    });
-    document.addEventListener('click', (e) => {
-        if (!userPanel.contains(e.target) && !userBtn.contains(e.target)) {
-            userPanel.classList.remove('active');
+    // Hamburger toggle - open/close menu
+    if (smHamburger && smNavLinks) {
+        smHamburger.addEventListener('click', function(e) {
+            e.stopPropagation();
+            smHamburger.classList.toggle('active');
+            smNavLinks.classList.toggle('active');
+            if (smAccountDropdown) {
+                smAccountDropdown.classList.remove('active');
+            }
+        });
+    }
+
+    // Close menu when clicking outside
+    document.addEventListener('click', function() {
+        if (smNavLinks && smNavLinks.classList.contains('active')) {
+            smNavLinks.classList.remove('active');
+            smHamburger.classList.remove('active');
+        }
+        if (smAccountDropdown && smAccountDropdown.classList.contains('active')) {
+            smAccountDropdown.classList.remove('active');
         }
     });
-}
+
+    // Close menu when clicking on nav items
+    if (smNavLinks) {
+        const navItems = smNavLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                smNavLinks.classList.remove('active');
+            });
+        });
+
+        // Prevent menu from closing when clicking inside
+        smNavLinks.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+
+    // Account button toggle
+    if (smAccountBtn && smAccountDropdown) {
+        smAccountBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            smAccountDropdown.classList.toggle('active');
+            if (smNavLinks) {
+                smNavLinks.classList.remove('active');
+            }
+        });
+    }
+
+    // Prevent dropdown from closing when clicking inside
+    if (smAccountDropdown) {
+        smAccountDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
+});
 </script>

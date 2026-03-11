@@ -22,11 +22,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SamCoding</title>
-    <script src="assets/js/change_style.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
-
+    <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/navbar.css">
+    <style>
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 5px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        #contestattemptsTableContainer.loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        .contest-problem-main-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 0.65rem;
+            letter-spacing: 0;
+            color: var(--text);
+        }
+        .contest-problem-desc {
+            font-size: 0.98rem;
+            line-height: 1.7;
+            color: #1f2937;
+        }
+        .problem-section-title {
+            margin-top: 1.35rem !important;
+            margin-bottom: 0.35rem !important;
+            font-size: 0.95rem !important;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+            text-transform: uppercase;
+            color: #334155;
+        }
+        .problem-statement pre {
+            font-size: 0.88rem;
+            line-height: 1.45;
+        }
+        .problems-sidebar {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            border-right: 1px solid #e2e8f0;
+            box-shadow: 8px 0 24px rgba(15, 23, 42, 0.05);
+        }
+        .problem-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+            padding: 0.85rem 0.9rem;
+            margin-bottom: 0.6rem;
+        }
+        .problem-card:hover {
+            transform: translateX(3px);
+            border-color: #86efac;
+            box-shadow: 0 6px 14px rgba(16, 185, 129, 0.14);
+        }
+        .problem-card.active {
+            background: #ffffff;
+            border-color: #22c55e;
+            box-shadow: 0 8px 16px rgba(34, 197, 94, 0.16);
+            color: #0f172a;
+        }
+        .problem-card.active .sidebar-problem-title,
+        .problem-card.active .sidebar-problem-meta {
+            color: #0f172a;
+        }
+        .problem-card.active .difficulty-badge {
+            background: #e2e8f0 !important;
+            color: #334155 !important;
+        }
+        .sidebar-problem-title {
+            font-size: 0.96rem;
+            font-weight: 650;
+            color: #0f172a;
+            margin-bottom: 0.45rem;
+            line-height: 1.35;
+        }
+        .sidebar-problem-meta {
+            display: flex;
+            gap: 0.4rem;
+            color: #64748b;
+        }
+        @media (max-width: 900px) {
+            .contest-problem-main-title {
+                font-size: 1.15rem;
+            }
+            .contest-problem-desc {
+                font-size: 0.94rem;
+            }
+            .problem-section-title {
+                font-size: 0.88rem !important;
+            }
+            .problem-statement pre {
+                font-size: 0.82rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
@@ -65,8 +167,8 @@
                         <span class="problem-number"><?= chr(65 + $index)?></span>
                         <span class="problem-status status-<?= $status ?>"><?= $statusIcon ?></span>
                     </div>
-                    <div class="problem-title"><?= htmlspecialchars($prob['title']) ?></div>
-                    <div class="problem-meta">
+                    <div class="sidebar-problem-title"><?= htmlspecialchars($prob['title']) ?></div>
+                    <div class="sidebar-problem-meta">
                         <span class="difficulty-badge difficulty-<?= $prob['difficulty'] ?>">
                             <?= ucfirst($prob['difficulty']) ?>
                         </span>
@@ -84,30 +186,30 @@
         <div class="problem-layout">
             <!-- Problem Statement -->
             <div class="problem-statement">
-                <h2 class="mb-2"><?=$solutions['title'] ?></h2>
-                <p><?=$solutions['descript'] ?></p>  
-                <h3 style="margin-top: 2rem;">INPUT:</h3>  
+                <h2 class="contest-problem-main-title"><?=$solutions['title'] ?></h2>
+                <p class="contest-problem-desc"><?=$solutions['descript'] ?></p>
+                <h3 class="problem-section-title">INPUT:</h3>
                 <pre><?=$solutions['input_format'] ?></pre>
 
-                <h3 style="margin-top: 2rem;">OUTPUT:</h3>  
+                <h3 class="problem-section-title">OUTPUT:</h3>
                 <pre><?=$solutions['output_format'] ?></pre>
 
                 <?php foreach ($test_examples as $index => $test): ?>
-                <h3 style="margin-top: 2rem;">Example <?=$index+1?>:</h3>
+                <h3 class="problem-section-title">Example <?=$index+1?>:</h3>
                 <pre>
 <strong>Input</strong>:</br><?=$test['input']?>
 </br><strong>Output</strong>:</br><?=$test['output']?>
                 </pre>
                 <?php endforeach ; ?>
-                <h3 style="margin-top: 2rem;">Constraints:</h3>
+                <h3 class="problem-section-title">Constraints:</h3>
                 <ul>
                     <li><?=$solutions['constraints'] ?></li>
                 </ul>
-                <div style="margin-top: 2rem;">
+                <div class="problem-meta-tags">
                     <span class="badge badge-<?=$solutions['difficulty'] ?>"><?=ucfirst($solutions['difficulty'])?></span>
                     <span class="badge badge-<?=$solutions['category']?>"><?= ucfirst($solutions['category']) ?></span>
                 </div>
-                <div style="margin-top: 2rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 0.5rem;">
+                <div class="problem-note">
                     <strong>💡 Izoh:</strong><?=$solutions['izoh'] ?>
                 </div>
             </div>
@@ -119,24 +221,27 @@
                     <input type="hidden" name="contest_id" value="<?= $contest_id; ?>">
                     <div class="code-section">
                         <div class="editor-header">
-                            <select id="languageSelect" onchange="changeLanguage()" name="language" required>
-                                <option value="python">Python 3.10.0</option>
-                                <option value="python2">Python 2.7.18</option>
-                                <option value="java">Java 15.0.2</option>
-                                <option value="cpp">C++ (GCC 10.2.0)</option>
-                                <option value="c">C (GCC 10.2.0)</option>
-                                <option value="csharp">C# 6.12.0</option>
-                                <option value="javascript">JavaScript (Node.js 18.15.0)</option>
-                                <option value="typescript">TypeScript 5.0.3</option>
-                                <option value="php">PHP 8.2.3</option>
-                                <option value="go">Go 1.16.2</option>
-                                <option value="kotlin">Kotlin 1.8.20</option>
-                                <option value="rust">Rust 1.68.2</option>
-                                <option value="ruby">Ruby 3.0.1</option>
-                                <option value="swift">Swift 5.3.3</option>
-                                <option value="r">R (4.1.1)</option>
-                                <option value="scala">Scala 3.2.2</option>
-                            </select>
+                            <div class="editor-language">
+                                <label for="languageSelect">Dasturlash tili</label>
+                                <select id="languageSelect" onchange="changeLanguage()" name="language" required>
+                                    <option value="python">Python 3.10.0</option>
+                                    <option value="python2">Python 2.7.18</option>
+                                    <option value="java">Java 15.0.2</option>
+                                    <option value="cpp">C++ (GCC 10.2.0)</option>
+                                    <option value="c">C (GCC 10.2.0)</option>
+                                    <option value="csharp">C# 6.12.0</option>
+                                    <option value="javascript">JavaScript (Node.js 18.15.0)</option>
+                                    <option value="typescript">TypeScript 5.0.3</option>
+                                    <option value="php">PHP 8.2.3</option>
+                                    <option value="go">Go 1.16.2</option>
+                                    <option value="kotlin">Kotlin 1.8.20</option>
+                                    <option value="rust">Rust 1.68.2</option>
+                                    <option value="ruby">Ruby 3.0.1</option>
+                                    <option value="swift">Swift 5.3.3</option>
+                                    <option value="r">R (4.1.1)</option>
+                                    <option value="scala">Scala 3.2.2</option>
+                                </select>
+                            </div>
                             <div class="editor-actions">
                                 <button class="btn btn-success" id="submitBtn">Submit</button>
                             </div>
@@ -146,7 +251,7 @@
                 </form>
                 <!-- Submission History -->
                 <div class="code-section" style="margin-top: 1rem;">
-                    <h3 class="mb-1">Oxirgi urinishlar</h3>
+                    <h3 class="mb-1 attempts-title">Oxirgi urinishlar</h3>
                     <div id="contestattemptsTableContainer">
                         <?php 
                         // Bu yerda attempts-table.php include qilinadi
@@ -161,7 +266,6 @@
     <!-- Footer -->
     <?php include_once 'includes/footer.php';?>
     
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/codeeditor.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
@@ -333,6 +437,8 @@
                 console.error("❌ Birinchi attempt topilmadi");
                 return;
             }
+
+            const attemptNumber = firstAttempt.querySelector(".attempt-number")?.textContent?.trim() || "1";
                         
             // Birinchi attemptni "Running..." ga o'zgartiramiz
             const currentTime = new Date().toLocaleString('en-GB', { 
@@ -344,24 +450,23 @@
             }).replace(',', '');
             
             firstAttempt.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 0.8rem;">
-                    <span class="status-badge status-error" 
-                        style="align-items: center; display: flex; justify-content: center; min-width: 100px;">
+                <div class="attempt-main">
+                    <span class="attempt-number">${attemptNumber}</span>
+                    <span class="status-badge status-error">
                         <span class="loading-spinner"></span> Running...
                     </span>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-                    <span class="lang-badge" 
-                        style="padding: 4px 10px; border-radius: 6px; font-size: 14px;">
+                <div class="attempt-meta">
+                    <span class="lang-badge">
                         ${language}
                     </span>
-                    <span class="metric-value" style="font-weight: 500;">
+                    <span class="metric-value">
                         <span class="loading-dots">...</span> ms
                     </span>
-                    <span class="metric-value" style="font-weight: 500;">
+                    <span class="metric-value">
                         <span class="loading-dots">...</span> KB
                     </span>
-                    <span class="date-text" style="font-size: 14px;">
+                    <span class="date-text">
                         ${currentTime}
                     </span>
                 </div>

@@ -11,6 +11,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SamCoding</title>
     <link rel="stylesheet" href="assets/css/styles-light.css">
+    <style>
+        .leaderboard-search-form {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .leaderboard-search-form .search-box {
+            width: min(360px, 100%);
+            min-width: 0;
+        }
+        .leaderboard-search-form .search-box input {
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .leaderboard-search-form {
+                justify-content: stretch;
+            }
+            .leaderboard-search-form .search-box {
+                width: 100%;
+            }
+        }
+    </style>
 
 </head>
 <body>
@@ -19,23 +41,36 @@
     
     <!-- Main Content -->
     <div class="container">
-        <!-- Filters -->
-        <div class="filters" style="margin-bottom: 2rem;">
-            <select id="categoryFilter">
-                <option value="overall">Overall Score</option>
-                <option value="problems">Problems Solved</option>
-                <option value="contests">Contest Wins</option>
-            </select>
-        </div>
-
         <?php
-        $reytingsPerPage = 10; 
+        $query = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $toLower = function ($value) {
+            $value = (string)$value;
+            if (function_exists('mb_strtolower')) {
+                return mb_strtolower($value, 'UTF-8');
+            }
+            return strtolower($value);
+        };
+
+        if ($query !== '') {
+            $queryLower = $toLower($query);
+            $reytings = array_values(array_filter($reytings, function ($row) use ($queryLower, $toLower) {
+                $user = $toLower($row['user'] ?? '');
+                $username = $toLower($row['username'] ?? '');
+                $course = $toLower($row['course'] ?? '');
+                return strpos($user, $queryLower) !== false
+                    || strpos($username, $queryLower) !== false
+                    || strpos($course, $queryLower) !== false;
+            }));
+        }
+
+        $reytingsPerPage = 10;
         $totalReytings = count($reytings);
         $totalPages = ceil($totalReytings / $reytingsPerPage);
 
         $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         if ($currentPage < 1) $currentPage = 1;
-        if ($currentPage > $totalPages) $currentPage = $totalPages;
+        if ($totalPages > 0 && $currentPage > $totalPages) $currentPage = $totalPages;
+        if ($totalPages === 0) $currentPage = 1;
 
         $startIndex = ($currentPage - 1) * $reytingsPerPage;
         $visibleReytings = array_slice($reytings, $startIndex, $reytingsPerPage);
@@ -43,8 +78,21 @@
  
         <h2 class="mb-1">To'liq reytinglar</h2>
 
+        <form method="GET" class="leaderboard-search-form" id="leaderboardSearchForm">
+            <input type="hidden" name="page" value="1">
+            <div class="search-box">
+                <input
+                    type="text"
+                    name="q"
+                    id="leaderboardSearchInput"
+                    value="<?= htmlspecialchars($query) ?>"
+                    placeholder="Ism, username yoki kurs bo'yicha qidiring..."
+                >
+            </div>
+        </form>
+
         <!-- 🏆 Top 3 blok -->
-        <?php if ($currentPage == 1): ?>
+        <?php if ($currentPage == 1 && $query === ''): ?>
         <div class="card-grid" style="margin-bottom: 3rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
             <!-- 1-o‘rin -->
             <?php if (isset($reytings[0])): ?>
@@ -127,9 +175,16 @@
                 </thead>
                 <tbody>
                     <?php 
+                    if (empty($visibleReytings)):
+                    ?>
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding: 1rem;">Natija topilmadi</td>
+                    </tr>
+                    <?php
+                    else:
                     foreach ($visibleReytings as $index => $reyting): 
                         $rank = $startIndex + $index + 1;
-                        if ($rank <= 3 && $currentPage == 1) continue;
+                        if ($rank <= 3 && $currentPage == 1 && $query === '') continue;
                     ?>
                     <tr>
                         <td><span class="rank"><?= $rank ?></span></td>
@@ -147,39 +202,57 @@
                         <td><?= intval($reyting['solved']) ?></td>
                         <td><?= intval($reyting['attempts']) ?></td>
                     </tr>
-                    <?php endforeach; ?>
+                    <?php endforeach; endif; ?>
                 </tbody>
             </table>
         </div>
 
 
-        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 1rem; margin-bottom: 1rem;">
+        <div class="pagination-container" style="margin-top: 1rem; margin-bottom: 1rem;">
             <?php if ($currentPage > 1): ?>
-                <a href="?page=<?= $currentPage - 1; ?>" class="btn btn-secondary">← Previous</a>
+                <a href="?<?= http_build_query(['page' => $currentPage - 1, 'q' => $query]); ?>" class="pagination-btn pagination-nav">← Previous</a>
             <?php else: ?>
-                <button class="btn btn-secondary" disabled>← Previous</button>
+                <button class="pagination-btn pagination-nav" disabled>← Previous</button>
             <?php endif; ?>
 
+            <div class="pagination-numbers">
             <?php
             $startPage = max(1, $currentPage - 4);
             $endPage = min($totalPages, $startPage + 9);
             for ($i = $startPage; $i <= $endPage; $i++): ?>
-                <a href="?page=<?= $i; ?>" class="btn <?= ($i === $currentPage) ? 'btn-primary' : 'btn-secondary'; ?>">
+                <a href="?<?= http_build_query(['page' => $i, 'q' => $query]); ?>" class="pagination-btn <?= ($i === $currentPage) ? 'active' : ''; ?>">
                     <?= $i; ?>
                 </a>
             <?php endfor; ?>
+            </div>
 
             <!-- Next tugmasi -->
             <?php if ($currentPage < $totalPages): ?>
-                <a href="?page=<?= $currentPage + 1; ?>" class="btn btn-secondary">Next →</a>
+                <a href="?<?= http_build_query(['page' => $currentPage + 1, 'q' => $query]); ?>" class="pagination-btn pagination-nav">Next →</a>
             <?php else: ?>
-                <button class="btn btn-secondary" disabled>Next →</button>
+                <button class="pagination-btn pagination-nav" disabled>Next →</button>
             <?php endif; ?>
         </div>
+    </div>
 
     <!-- Footer -->
     <?php include_once 'includes/footer.php';?>
     <script src="assets/js/change_style.js"></script>
+    <script>
+        (function () {
+            const form = document.getElementById('leaderboardSearchForm');
+            const input = document.getElementById('leaderboardSearchInput');
+            if (!form || !input) return;
+
+            let timer = null;
+            input.addEventListener('input', function () {
+                clearTimeout(timer);
+                timer = setTimeout(function () {
+                    form.submit();
+                }, 350);
+            });
+        })();
+    </script>
     
 </body>
 </html>

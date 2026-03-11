@@ -26,15 +26,16 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
 ?>
 
 <?php if(empty($attempts)): ?>
-    <div class="submission-item">
+    <div class="submission-item empty-attempts">
         <span><strong>Hali hech qanday urinish yo'q 😌</strong></span>
     </div>
 <?php else: ?>
     <div id="attemptsListContainer">
-    <?php foreach ($visibleAttempts as $attempt): ?>
+    <?php foreach ($visibleAttempts as $index => $attempt): ?>
         <?php 
             $status = $attempt['status'];
             $statusClass = 'status-badge ';
+            $attemptNumber = $totalAttempts - ($startIndex + $index);
             
             if($status === 'Accept') {
                 $statusClass .= 'status-accepted';
@@ -46,13 +47,11 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
                 $statusClass .= 'status-error';
             }
         ?>
-        <div class="submission-item"
-            style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #eee; cursor:pointer;"
-            onclick="showCodeModal(<?= $attempt['attempt_id'] ?>)">
+        <div class="submission-item" onclick="showCodeModal(<?= $attempt['attempt_id'] ?>)">
             
-            <div style="display: flex; align-items: center; gap: 0.8rem;">
-                <span class="<?= $statusClass ?>" 
-                    style="align-items: center; display: flex; justify-content: center; min-width: 100px;">
+            <div class="attempt-main">
+                <span class="attempt-number"><?= $attemptNumber ?></span>
+                <span class="<?= $statusClass ?>">
                     <?php if ($status === 'Accept'): ?>
                         <?= htmlspecialchars($status); ?>
                     <?php else: ?>
@@ -60,18 +59,17 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
                     <?php endif; ?>
                 </span>
             </div>
-            <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem;">
-                <span class="lang-badge" 
-                    style="padding: 4px 10px; border-radius: 6px; font-size: 14px;">
+            <div class="attempt-meta">
+                <span class="lang-badge">
                     <?= htmlspecialchars($attempt['language']); ?>
                 </span>
-                <span class="metric-value" style="font-weight: 500;">
+                <span class="metric-value">
                     <?= intval($attempt['runTime']); ?> ms
                 </span>
-                <span class="metric-value" style="font-weight: 500;">
+                <span class="metric-value">
                     <?= intval($attempt['memory']/1024); ?> KB
                 </span>
-                <span class="date-text" style="font-size: 14px;">
+                <span class="date-text">
                     <?= date('d.m.Y H:i', strtotime($attempt['created_at'])); ?>
                 </span>
             </div>
@@ -79,42 +77,54 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
     <?php endforeach; ?>
     </div>
 
-    <div id="paginationContainer" style="display: flex; justify-content: center; gap: 0.5rem; margin-top: 2rem; margin-bottom: 3rem;">
-        <?php if ($currentPage > 1): ?>
-            <button onclick="loadAttemptsPage(<?= $currentPage - 1; ?>)" class="btn btn-secondary">← Previous</button>
-        <?php else: ?>
-            <button class="btn btn-secondary" disabled>← Previous</button>
-        <?php endif; ?>
+    <div id="paginationContainer" class="pagination-container attempts-pagination">
+        <button type="button"
+            onclick="if(<?= $currentPage ?> > 1){loadAttemptsPage(<?= $currentPage - 1; ?>)}"
+            class="pagination-btn pagination-nav"
+            <?= ($currentPage <= 1) ? 'disabled' : '' ?>>
+            ← Previous
+        </button>
 
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-            <button onclick="loadAttemptsPage(<?= $i; ?>)" 
-                class="btn <?= ($i === $currentPage) ? 'btn-primary' : 'btn-secondary'; ?>">
-                <?= $i; ?>
-            </button>
-        <?php endfor; ?>
+        <div class="pagination-numbers">
+            <?php
+            $startPage = max(1, $currentPage - 2);
+            $endPage = min($totalPages, $startPage + 4);
+            if ($endPage - $startPage + 1 < 5 && $totalPages >= 5) {
+                $startPage = max(1, $endPage - 4);
+            }
+            for ($i = $startPage; $i <= $endPage; $i++): ?>
+                <button type="button"
+                    onclick="loadAttemptsPage(<?= $i; ?>)"
+                    class="pagination-btn <?= ($i === $currentPage) ? 'active' : ''; ?>">
+                    <?= $i; ?>
+                </button>
+            <?php endfor; ?>
+        </div>
 
-        <?php if ($currentPage < $totalPages): ?>
-            <button onclick="loadAttemptsPage(<?= $currentPage + 1; ?>)" class="btn btn-secondary">Next →</button>
-        <?php else: ?>
-            <button class="btn btn-secondary" disabled>Next →</button>
-        <?php endif; ?>
+        <button type="button"
+            onclick="if(<?= $currentPage ?> < <?= $totalPages ?>){loadAttemptsPage(<?= $currentPage + 1; ?>)}"
+            class="pagination-btn pagination-nav"
+            <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>>
+            Next →
+        </button>
     </div>
 
     <!-- MODAL for code preview -->
-    <div id="codeModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
-        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:white; padding:20px; border-radius:8px; width:80%; max-width:800px; max-height:80vh;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3 style="margin:0;">Kodni ko'rish</h3>
-                <button onclick="document.getElementById('codeModal').style.display='none'" 
-                    style="background:none; border:none; font-size:20px; cursor:pointer;">×</button>
+    <div id="codeModal" class="code-modal-overlay" onclick="closeCodeModal(event)">
+        <div class="code-modal-panel">
+            <div class="code-modal-header">
+                <h3>Kodni ko'rish</h3>
+                <button type="button" class="code-modal-close" onclick="closeCodeModal()">
+                    ×
+                </button>
             </div>
 
-            <pre style="background:#f5f5f5; padding:15px; border-radius:4px; max-height:60vh; overflow:auto;">
+            <pre class="code-modal-pre">
 <code id="modalCodeContent"></code>
 </pre>
 
-            <div style="margin-top:15px; text-align:right;">
-                <button onclick="copyModalCode()" style="padding:8px 16px; background:#007bff; color:white; border:none; border-radius:4px; cursor:pointer;">📋 Copy Code</button>
+            <div class="code-modal-footer">
+                <button type="button" class="btn btn-primary" onclick="copyModalCode()">📋 Copy Code</button>
             </div>
         </div>
     </div>
@@ -131,8 +141,25 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
             document.getElementById('modalCodeContent').textContent = code;
             document.getElementById('codeModal').style.display = 'block';
         } catch (error) {
-            alert('Kodni yuklashda xatolik yuz berdi!');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "Kodni yuklashda xatolik yuz berdi",
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+            } else {
+                alert('Kodni yuklashda xatolik yuz berdi!');
+            }
         }
+    }
+
+    function closeCodeModal(event) {
+        if (event && event.target && event.target.id !== 'codeModal') return;
+        document.getElementById('codeModal').style.display = 'none';
     }
 
     function copyModalCode() {
@@ -140,7 +167,19 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(code)
-                .then(() => alert('Kod nusxalandi!'))
+                .then(() => {
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            toast: true,
+                            position: 'top-end',
+                            icon: 'success',
+                            title: "Kod nusxalandi",
+                            showConfirmButton: false,
+                            timer: 2200,
+                            timerProgressBar: true
+                        });
+                    }
+                })
                 .catch(() => fallbackCopy(code));
         } else {
             fallbackCopy(code);
@@ -156,8 +195,31 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
         textarea.select();
         try {
             document.execCommand('copy');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: "Kod nusxalandi",
+                    showConfirmButton: false,
+                    timer: 2200,
+                    timerProgressBar: true
+                });
+            }
         } catch (err) {
-            alert('Browser nusxa olishni qo‘llamaydi.');
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: "Browser nusxa olishni qo‘llamaydi",
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true
+                });
+            } else {
+                alert('Browser nusxa olishni qo‘llamaydi.');
+            }
         }
         document.body.removeChild(textarea);
     }

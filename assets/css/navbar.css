@@ -1,0 +1,359 @@
+/* SamCoding Navbar - Modern & Minimal Design */
+
+:root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #d1fae5;
+    --text: #1a202c;
+    --text-secondary: #64748b;
+    --border: #e2e8f0;
+    --bg-hover: #f8fafc;
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Navbar Container */
+.sm-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+    background: #ffffff;
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.sm-nav-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* Logo Section */
+.sm-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--text);
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+
+.sm-logo:hover {
+    color: var(--primary);
+}
+
+.sm-logo-icon {
+    width: 38px;
+    height: 38px;
+    background: var(--primary);
+    color: #ffffff;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Navigation Links */
+.sm-nav-links {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.sm-nav-links li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sm-link {
+    display: block;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.sm-link:hover {
+    color: var(--primary);
+}
+
+.sm-link.active {
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+    font-weight: 700;
+    padding-bottom: calc(0.5rem - 3px);
+}
+
+/* User Section */
+.sm-user-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+
+/* Account Wrapper */
+.sm-account-wrapper {
+    position: relative;
+}
+
+/* Account Button */
+.sm-account-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--bg-hover);
+    color: var(--primary);
+    border: 2px solid transparent;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    padding: 0;
+}
+
+.sm-account-btn:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
+}
+
+.sm-account-btn:active {
+    transform: scale(0.95);
+}
+
+/* Dropdown Menu */
+.sm-dropdown {
+    position: fixed;
+    top: 70px;
+    right: 2rem;
+    width: 280px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    padding: 0.5rem;
+    display: none;
+    flex-direction: column;
+    z-index: 2000;
+    animation: dropdownSlideIn 0.2s ease-out;
+}
+
+.sm-dropdown.active {
+    display: flex;
+}
+
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dropdown Header */
+.sm-dropdown > div:first-child {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+}
+
+.sm-dropdown > div:first-child p {
+    margin: 0.25rem 0;
+    color: var(--text);
+}
+
+.sm-dropdown > div:first-child p:first-child {
+    font-weight: 700;
+    color: var(--text);
+}
+
+.sm-dropdown > div:first-child p:last-child {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+/* Dropdown Items */
+.sm-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 8px;
+    transition: var(--transition);
+}
+
+.sm-dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.sm-dropdown-item:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.sm-dropdown-item:hover i {
+    color: var(--primary);
+}
+
+/* Logout Item */
+.sm-logout {
+    color: #ef4444;
+}
+
+.sm-logout:hover {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.sm-logout:hover i {
+    color: #dc2626;
+}
+
+/* Hamburger Menu (Mobile) */
+.sm-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    background: transparent;
+    margin: 0;
+}
+
+.sm-hamburger span {
+    width: 24px;
+    height: 2.5px;
+    background: var(--text-secondary);
+    border-radius: 2px;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sm-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(11px, 11px);
+}
+
+.sm-hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.sm-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(9px, -10px);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .sm-nav-container {
+        padding: 0 1.5rem;
+    }
+
+    .sm-hamburger {
+        display: flex;
+        order: 2;
+    }
+
+    .sm-user-section {
+        order: 3;
+        gap: 1rem;
+    }
+
+    .sm-nav-links {
+        position: fixed;
+        top: 70px;
+        left: -100%;
+        width: 100%;
+        max-width: 400px;
+        height: calc(100vh - 70px);
+        background: #ffffff;
+        flex-direction: column;
+        padding: 2rem;
+        gap: 0.75rem;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+        overflow-y: auto;
+        z-index: 1999;
+    }
+
+    .sm-nav-links.active {
+        left: 0;
+    }
+
+    .sm-link {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.05rem;
+        border-radius: 10px;
+    }
+
+    .sm-dropdown {
+        right: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .sm-nav-container {
+        padding: 0 1rem;
+    }
+
+    .sm-logo {
+        gap: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .sm-logo-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+    }
+
+    .sm-account-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .sm-dropdown {
+        width: 260px;
+        right: 1rem;
+    }
+
+    .sm-user-section {
+        gap: 0.75rem;
+    }
+}

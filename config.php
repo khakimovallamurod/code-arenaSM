@@ -201,9 +201,7 @@ class Database{
     }
     public function get_contest_registered_users($contest_id){
        
-        $sql = "SELECT 
-            u.fullname,
-            cr.created_at
+        $sql = "SELECT DISTINCT u.fullname, u.id, cr.created_at
         FROM contest_register cr
         JOIN users u ON u.id = cr.user_id
         WHERE cr.contest_id = " . intval($contest_id);
@@ -213,6 +211,15 @@ class Database{
             $data[] = $row;
         }
         return $data;
+    }
+    public function is_register_user($contest_id, $user_id){
+        $sql = "SELECT user_id, status FROM contest_register 
+                        WHERE contest_id = " . intval($contest_id) . " 
+                        AND user_id = " . intval($user_id) . " 
+                        ORDER BY status DESC
+                        LIMIT 1";
+        $fetch = mysqli_fetch_assoc($this->query($sql));
+        return $fetch;
     }
     public function get_contest_reyting_by_user($contest_id){
        

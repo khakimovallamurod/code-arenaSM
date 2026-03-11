@@ -26,13 +26,14 @@
    $end = strtotime($contest['end_time']);
    $registered_count = isset($contest['registered_count']) ? $contest['registered_count'] : 234;
    $registered_users = $db->get_contest_registered_users($contest_id);
-   
    // Tekshirish: foydalanuvchi ro'yxatdan o'tganmi?
-   $user_id = $_SESSION['id'];
-   $is_registered = $db->get_data_by_table("contest_register", [
-       'contest_id' => $contest_id, 
-       'user_id' => $user_id
-   ]);
+   $user_id = intval($_SESSION['id']);
+   $register_data = $db->is_register_user($contest_id, $user_id);
+   $register_status = (is_array($register_data) && array_key_exists('status', $register_data))
+       ? intval($register_data['status'])
+       : 0;
+    
+   $is_registered = ($register_status === 1);
 
    $reying_users = $db->get_contest_reyting_by_user($contest_id);
 ?>
@@ -42,24 +43,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SamCoding</title>
-    
+    <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="assets/css/contest_detail.css">
 </head>
 <body>
     <?php include_once 'includes/novbar.php';?>
 
     <div class="container">
-        <div style="margin-bottom: 1rem;">
-            <a href="contests.php" class="btn btn-secondary">← Orqaga</a>
+        <div class="contest-detail-topbar">
+            <a href="contests.php" class="btn btn-secondary contest-back-btn">← Orqaga</a>
         </div>
 
-        <div class="contest-header">
+        <div class="contest-header contest-detail-hero">
             <h1><?= htmlspecialchars($contest['title']) ?></h1>
-            <p class="text-secondary" style="margin-bottom: 1rem;"><?= htmlspecialchars($contest['description']) ?></p>
+            <p class="text-secondary contest-detail-description"><?= htmlspecialchars($contest['description']) ?></p>
         </div>
-
         <!-- Status Banner -->
         <?php if ($actual_status == 0): // Kutilmoqda ?>
-        <div class="countdown-timer">
+        <div class="countdown-timer contest-status-card">
             <h2 style="margin-bottom: 1rem;">Musobaqa boshlanishiga:</h2>
             <div class="countdown-grid">
                 <div class="countdown-item">
@@ -83,19 +84,19 @@
             <form method="POST" id="contestRegisterform" action="contest-register.php">
                 <input type="hidden" name="contestid" value="<?= $contest_id ?>">
                 <input type="hidden" name="userid" value="<?= $_SESSION['id'] ?>">
-                <button class="btn" style="margin-top: 1rem; background: white; color: #54eb36ff; font-weight: bold; border: none;">
+                <button class="btn contest-register-btn">
                     Ro'yxatdan o'tish
                 </button>
             </form>
             <?php else: ?>
-            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(84, 235, 54, 0.2); border-radius: 0.5rem; color: black;">
+            <div class="contest-register-note">
                 ✅ Siz musobaqadan ro'yxatdan o'tgansiz. 
             </div>
             <?php endif; ?>
         </div>
         
         <?php elseif ($actual_status == 1): // Faol ?>
-        <div class="countdown-timer">
+        <div class="countdown-timer contest-status-card">
             <h2 style="margin-bottom: 1rem;">Musobaqa tugashiga:</h2>
             <div class="countdown-grid">
                 <div class="countdown-item">
@@ -119,41 +120,43 @@
             <form method="POST" id="contestRegisterform" action="contest-register.php">
                 <input type="hidden" name="contestid" value="<?= $contest_id ?>">
                 <input type="hidden" name="userid" value="<?= $_SESSION['id'] ?>">
-                <button class="btn" style="margin-top: 1rem; background: white; color: #54eb36ff; font-weight: bold; border: none;">
+                <button class="btn contest-register-btn">
                     Ro'yxatdan o'tish
                 </button>
             </form>
             <?php else: ?>
-            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(84, 235, 54, 0.2); border-radius: 0.5rem; color: black;">
+            <div class="contest-register-note">
                 ✅ Siz musobaqada ishtirok etyapsiz ...
             </div>
             <?php endif; ?>
         </div>
         
         <?php elseif ($actual_status == 2): // Tugagan ?>
-        <div class="countdown-timer" style="background: #dd380aff">
+        <div class="countdown-timer contest-status-card ended">
             <h2 style="margin-bottom: 1rem;">Musobaqa yakunlandi</h2>
             <p style="font-size: 1.2rem; margin: 1rem 0;">
                 <?= date('j F Y, H:i', $end) ?> da tugagan
             </p>
             <?php if ($is_registered): ?>
-            <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(84, 235, 54, 0.2); border-radius: 0.5rem; color: black;">
+            <div class="contest-register-note">
                 ✅ Siz musobaqada ishtirok etdingiz.
             </div>
             <?php endif; ?>
         </div>
         <?php endif; ?>
 
-        <div class="contest-tabs" style="margin-top: 2rem;">
-            <button class="contest-tab active" onclick="switchTab('problems')">Masalalar</button>
-            <button class="contest-tab" onclick="switchTab('participants')">Qatnashuvchilar</button>
-            <button class="contest-tab" onclick="switchTab('results')">Natijalar</button>
+        <div class="contest-tab-wrap">
+            <div class="contest-tabs">
+                <button class="contest-tab active" onclick="switchTab('problems')">Masalalar</button>
+                <button class="contest-tab" onclick="switchTab('participants')">Qatnashuvchilar</button>
+                <button class="contest-tab" onclick="switchTab('results')">Natijalar</button>
+            </div>
         </div>
 
-        <div id="problemsTab" class="tab-content active">
+        <div id="problemsTab" class="tab-content active contest-tab-panel">
             <?php if ($actual_status >= 1): ?>
             <div class="table-container">
-                <table>
+                <table class="contest-table">
                     <thead>
                         <tr>
                             <th style="width: 60px;">Status</th>
@@ -163,8 +166,8 @@
                     </thead>
                     <tbody>
                         <?php foreach ($contest_problems as $problem): ?>
-                        <tr onclick="openContestProblems(<?=$problem['id']?>, <?=$problem['contest_id']?>)" style="cursor: pointer;">
-                            <td style="font-size: 1.5rem; color: var(--text-secondary);">—</td>
+                        <tr class="contest-problem-row" onclick="openContestProblems(<?=$problem['id']?>, <?=$problem['contest_id']?>)">
+                            <td><span class="contest-status-symbol">—</span></td>
                             <td>
                                 <strong><?= htmlspecialchars($problem['title']) ?></strong>
                                 <div style="margin-top: 0.5rem;">
@@ -193,17 +196,17 @@
                 </table>
             </div>
             <?php else: ?>
-            <div class="card" style="text-align: center; padding: 2rem;">
+            <div class="card contest-empty-state">
                 <h3>Musobaqa hali boshlanmagan</h3>
                 <p class="text-secondary">Musobaqa boshlanganda masalalar ko'rinadi</p>
             </div>
             <?php endif; ?>
         </div>
 
-        <div id="participantsTab" class="tab-content">
+        <div id="participantsTab" class="tab-content contest-tab-panel">
             <h2 class="mb-1">Qatnashuvchilar</h2>
             <div class="table-container">
-                <table>
+                <table class="contest-table">
                     <thead>
                         <tr>
                             <th style="width: 60px;">#</th>
@@ -216,8 +219,8 @@
                                 <tr>
                                     <td><strong style="color: var(--primary);"><?= $index + 1 ?></strong></td>
                                     <td>
-                                        <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                            <div class="user-avatar" style="width: 40px; height: 40px; font-size: 1rem;">
+                                        <div class="participant-user">
+                                            <div class="user-avatar participant-avatar">
                                                 <?= strtoupper(substr($user['fullname'], 0, 2)) ?>
                                             </div>
                                             <strong><?= htmlspecialchars($user['fullname']) ?></strong>
@@ -237,11 +240,11 @@
             </div>
         </div>
         <!-- Natijalar Tab Content - Mavjud resultsTab div ichiga qo'ying -->
-        <div id="resultsTab" class="tab-content">
+        <div id="resultsTab" class="tab-content contest-tab-panel">
             <h2 class="mb-1">Natijalar jadvali</h2>
             
             <?php if ($actual_status < 1 || !$is_registered): ?>
-                <div class="card" style="text-align: center; padding: 2rem;">
+                <div class="card contest-empty-state">
                     <h3>Natijalarni ko'rish uchun</h3>
                     <p class="text-secondary">
                         <?php if ($actual_status < 1): ?>
@@ -252,12 +255,12 @@
                     </p>
                 </div>
             <?php else: ?>
-                <div class="table-container" style="overflow-x: auto;">
-                    <table style="min-width: 800px;">
+                <div class="table-container results-table-wrap">
+                    <table class="contest-results-table">
                         <thead>
                             <tr>
-                                <th style="width: 50px; position: sticky; left: 0; background: var(--bg-primary); z-index: 10;">#</th>
-                                <th style="width: 200px; position: sticky; left: 50px; background: var(--bg-primary); z-index: 10;">Foydalanuvchi</th>
+                                <th class="results-rank-col">#</th>
+                                <th class="results-user-col">Foydalanuvchi</th>
                                 <?php foreach ($contest_problems as $index=>$problem): ?>
                                     <th style="width: 120px; text-align: center;">
                                         <?= chr(65 + $index) ?>
@@ -275,12 +278,12 @@
                                 $solved_count = $user['solved_count'];
                             ?>
                             <tr>
-                                <td style="position: sticky; left: 0; background: var(--bg-primary); z-index: 9;">
+                                <td class="results-rank-col">
                                     <strong style="color: var(--primary);"><?= $rank++ ?></strong>
                                 </td>
-                                <td style="position: sticky; left: 50px; background: var(--bg-primary); z-index: 9;">
-                                    <div style="display: flex; align-items: center; gap: 0.75rem;">
-                                        <div class="user-avatar" style="width: 35px; height: 35px; font-size: 0.9rem;">
+                                <td class="results-user-col">
+                                    <div class="results-user-cell">
+                                        <div class="user-avatar results-user-avatar">
                                             <?= strtoupper(substr($user['fullname'], 0, 2)) ?>
                                         </div>
                                         <strong><?= htmlspecialchars($user['fullname']) ?></strong>
@@ -344,23 +347,23 @@
                     </table>
                 </div>
                 
-                <div style="margin-top: 1.5rem; padding: 1rem; background: var(--bg-secondary); border-radius: 0.5rem;">
-                    <h4 style="margin-bottom: 0.75rem;">Izoh:</h4>
-                    <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <div style="width: 30px; height: 30px; background: rgba(34, 197, 94, 0.15); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">✓</div>
+                <div class="results-legend">
+                    <h4>Izoh:</h4>
+                    <div class="results-legend-list">
+                        <div class="results-legend-item">
+                            <div class="results-legend-icon accepted">✓</div>
                             <span>To'g'ri ishlangan</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <div style="width: 30px; height: 30px; background: rgba(239, 68, 68, 0.15); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">×</div>
+                        <div class="results-legend-item">
+                            <div class="results-legend-icon attempted">×</div>
                             <span>Xato urinish</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 0.5rem;">
-                            <div style="width: 30px; height: 30px; background: transparent; border: 1px solid var(--border); border-radius: 0.25rem; display: flex; align-items: center; justify-content: center;">—</div>
+                        <div class="results-legend-item">
+                            <div class="results-legend-icon none">—</div>
                             <span>Urinish yo'q</span>
                         </div>
                     </div>
-                    <p style="margin-top: 0.75rem; font-size: 0.9rem; color: var(--text-secondary);">
+                    <p class="results-legend-note">
                         Qavs ichidagi raqamlar urinishlar sonini bildiradi
                     </p>
                 </div>
@@ -390,7 +393,7 @@
             document.body.appendChild(form);
             form.submit();
         }
-        document.querySelectorAll('form').forEach(form => {
+        document.querySelectorAll('#contestRegisterform').forEach(form => {
             form.addEventListener('submit', function(event) {
                 event.preventDefault(); 
 
@@ -400,7 +403,20 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
+                .then(async (response) => {
+                    const raw = await response.text();
+                    let data = {};
+                    try {
+                        data = raw ? JSON.parse(raw) : {};
+                    } catch (e) {
+                        throw new Error('Server JSON qaytarmadi');
+                    }
+
+                    if (!response.ok) {
+                        throw new Error(data.message || "Server xatoligi");
+                    }
+                    return data;
+                })
                 .then(data => {
                     if (data.success) {
                         toastr.success(data.message,  {timeOut: 1000});
@@ -413,6 +429,7 @@
                 })
                 .catch(error => {
                     console.error('Xatolik yuz berdi:', error);
+                    toastr.error(error.message || "Serverda xatolik yuz berdi", {timeOut: 1500});
                 });
             });
         });
