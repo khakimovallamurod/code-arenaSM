@@ -130,7 +130,7 @@
         }
     </style>
 </head>
-<body>
+<body class="contest-problems-page">
     <!-- Navbar -->
     <?php include_once 'includes/novbar.php';?>
     

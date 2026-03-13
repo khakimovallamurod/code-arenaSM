@@ -1459,7 +1459,7 @@ textarea {
         }
 
         /* Main content adjustment */
-        .container {
+        .contest-problems-page .container {
             margin-left: 300px;
             padding-left: 2rem;
         }
@@ -1470,7 +1470,7 @@ textarea {
                 width: 250px;
             }
             
-            .container {
+            .contest-problems-page .container {
                 margin-left: 250px;
             }
         }
@@ -1487,7 +1487,7 @@ textarea {
                 left: 0;
             }
 
-            .container {
+            .contest-problems-page .container {
                 margin-left: 0;
             }
         }
