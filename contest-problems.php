@@ -70,10 +70,28 @@
             font-size: 0.88rem;
             line-height: 1.45;
         }
-        .problems-sidebar {
+        .contest-problems-page {
+            --sidebar-width: 300px;
+        }
+        .contest-problems-page .problems-sidebar {
+            width: var(--sidebar-width);
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             border-right: 1px solid #e2e8f0;
             box-shadow: 8px 0 24px rgba(15, 23, 42, 0.05);
+        }
+        .contest-problems-page .container {
+            width: calc(100% - var(--sidebar-width));
+            max-width: none;
+            margin: 0 0 0 var(--sidebar-width);
+            padding: 1.5rem;
+        }
+        .contest-problems-page .problem-layout {
+            grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+            gap: 1.5rem;
+            align-items: start;
+        }
+        .contest-problems-page .problem-layout > * {
+            min-width: 0;
         }
         .problem-card {
             background: #ffffff;
@@ -114,6 +132,25 @@
             gap: 0.4rem;
             color: #64748b;
         }
+        @media (max-width: 1280px) {
+            .contest-problems-page {
+                --sidebar-width: 270px;
+            }
+            .contest-problems-page .problem-layout {
+                grid-template-columns: minmax(0, 1fr) minmax(320px, 0.95fr);
+            }
+        }
+        @media (max-width: 1024px) {
+            .contest-problems-page {
+                --sidebar-width: 250px;
+            }
+            .contest-problems-page .container {
+                padding: 1.2rem;
+            }
+            .contest-problems-page .problem-layout {
+                grid-template-columns: 1fr;
+            }
+        }
         @media (max-width: 900px) {
             .contest-problem-main-title {
                 font-size: 1.15rem;
@@ -126,6 +163,17 @@
             }
             .problem-statement pre {
                 font-size: 0.82rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .contest-problems-page {
+                --sidebar-width: 250px;
+            }
+        }
+        @media (max-width: 576px) {
+            .contest-problems-page .container {
+                width: 100%;
+                margin-left: 0;
             }
         }
     </style>
