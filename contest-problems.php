@@ -157,7 +157,7 @@
                 
                 $isActive = ($prob['id'] == $problem_id) ? 'active' : '';
             ?>
-            
+             
             <form action="" method="POST" class="problem-card-form">
                 <input type="hidden" name="problemid" value="<?= $prob['id'] ?>">
                 <input type="hidden" name="contestid" value="<?= $contest_id ?>">
