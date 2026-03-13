@@ -240,10 +240,16 @@
             .then(result => {
                 
                 if(result.success) {
-                    
-                    setTimeout(() => {
-                        reloadAttemptsTable(1);
-                    }, 500);
+                    const isAccepted = (result.status || '').toLowerCase() === 'accept';
+                    if (isAccepted) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        setTimeout(() => {
+                            reloadAttemptsTable(1);
+                        }, 500);
+                    }
                 } else {
                     console.error("❌ Judge xatolik:", result.message);
                     // Xatolik bo'lsa ham jadvalni yangilaymiz

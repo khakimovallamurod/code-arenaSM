@@ -141,8 +141,18 @@
                 "id = $reyting_id"
             );
         }
-        echo json_encode(['success' => true, 'message' => 'Dasturingiz yuborildi!']);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Dasturingiz yuborildi!',
+            'status' => $result['status'],
+            'tests_passed' => $result['tests_passed'],
+            'total_tests' => $result['total_tests']
+        ]);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Yuborishda xatolik!']);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Yuborishda xatolik!',
+            'status' => $result['status']
+        ]);
     }
 ?>

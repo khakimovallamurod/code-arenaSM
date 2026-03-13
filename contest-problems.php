@@ -391,10 +391,17 @@
             .then(result => {                
                 // 4. Judge tugagandan keyin attempts jadvalini qayta yuklaymiz
                 if(result.success) {
-                    // 500ms kutib jadvalini yangilaymiz (animatsiya uchun)
-                    setTimeout(() => {
-                        reloadAttemptsTable(1, problem_id, contest_id);
-                    }, 500);
+                    const isAccepted = (result.status || '').toLowerCase() === 'accept';
+                    if (isAccepted) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 500);
+                    } else {
+                        // 500ms kutib jadvalini yangilaymiz (animatsiya uchun)
+                        setTimeout(() => {
+                            reloadAttemptsTable(1, problem_id, contest_id);
+                        }, 500);
+                    }
                 } else {
                     console.error("❌ Judge xatolik:", result.message);
                     // Xatolik bo'lsa ham jadvalni yangilaymiz
