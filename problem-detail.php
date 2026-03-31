@@ -44,36 +44,39 @@
     
     <!-- Main Content -->
     <div class="container">
-        <h1 class="mb-2 problem-title"><?=$solutions['title'] ?></h1>
+        <h1 class="mb-2 problem-title"><?= htmlspecialchars($solutions['title']) ?></h1>
         <div class="problem-layout">
             <!-- Problem Statement -->
             <div class="problem-statement">
                 <h2>Muammo bayoni</h2>
-                <p class="problem-description"><?=$solutions['descript'] ?></p>
+                <p class="problem-description"><?= nl2br(htmlspecialchars($solutions['descript'])) ?></p>
                 <h3 class="problem-section-title">INPUT:</h3>
-                <pre><?=$solutions['input_format'] ?></pre>
+                <pre><?= htmlspecialchars($solutions['input_format']) ?></pre>
 
                 <h3 class="problem-section-title">OUTPUT:</h3>
-                <pre><?=$solutions['output_format'] ?></pre>
+                <pre><?= htmlspecialchars($solutions['output_format']) ?></pre>
 
                 <?php foreach ($test_examples as $index => $test): ?>
-                <h3 class="problem-section-title">Example <?=$index+1?>:</h3>
-                <pre>
-<strong>Input</strong>:</br><?=$test['input']?>
-</br><strong>Output</strong>:</br><?=$test['output']?>
-                </pre>
-                <?php endforeach ; ?>
+                <h3 class="problem-section-title">Example <?= $index + 1 ?>:</h3>
+                <pre><strong>Input</strong>:
+<?= htmlspecialchars($test['input']) ?>
+
+<strong>Output</strong>:
+<?= htmlspecialchars($test['output']) ?></pre>
+                <?php endforeach; ?>
                 <h3 class="problem-section-title">Constraints:</h3>
                 <ul>
-                    <li><?=$solutions['constraints'] ?></li>
+                    <li><?= htmlspecialchars($solutions['constraints']) ?></li>
                 </ul>
                 <div class="problem-meta-tags">
-                    <span class="badge badge-<?=$solutions['difficulty'] ?>"><?=ucfirst($solutions['difficulty'])?></span>
-                    <span class="badge badge-<?=$solutions['category']?>"><?= ucfirst($solutions['category']) ?></span>
+                    <span class="badge badge-<?= htmlspecialchars($solutions['difficulty']) ?>"><?= ucfirst(htmlspecialchars($solutions['difficulty'])) ?></span>
+                    <span class="badge badge-<?= htmlspecialchars($solutions['category']) ?>"><?= ucfirst(htmlspecialchars($solutions['category'])) ?></span>
                 </div>
+                <?php if (!empty($solutions['izoh'])): ?>
                 <div class="problem-note">
-                    <strong>💡 Izoh:</strong><?=$solutions['izoh'] ?>
+                    <strong>💡 Izoh:</strong> <?= nl2br(htmlspecialchars($solutions['izoh'])) ?>
                 </div>
+                <?php endif; ?>
             </div>
             <!-- Code Editor Section -->
             <div>

@@ -15,6 +15,45 @@ class Database{
     public function query($query) {
         return mysqli_query($this->link, $query);
     }
+    private function escape_identifier($identifier) {
+        return preg_replace('/[^a-zA-Z0-9_]/', '', $identifier);
+    }
+    private function get_manual_id_value($table) {
+        $safe_table = $this->escape_identifier($table);
+        if ($safe_table === '') {
+            return null;
+        }
+
+        $column_query = "SHOW COLUMNS FROM `{$safe_table}` LIKE 'id'";
+        $column_result = $this->query($column_query);
+        if (!$column_result) {
+            return null;
+        }
+
+        $column = mysqli_fetch_assoc($column_result);
+        if (!$column) {
+            return null;
+        }
+
+        $extra = strtolower($column['Extra'] ?? '');
+        if (strpos($extra, 'auto_increment') !== false) {
+            return null;
+        }
+
+        $is_required = ($column['Null'] ?? 'YES') === 'NO' && ($column['Default'] ?? null) === null;
+        if (!$is_required) {
+            return null;
+        }
+
+        $max_query = "SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM `{$safe_table}`";
+        $max_result = $this->query($max_query);
+        if (!$max_result) {
+            return null;
+        }
+
+        $row = mysqli_fetch_assoc($max_result);
+        return intval($row['next_id'] ?? 1);
+    }
     public function get_data_by_table($table, $arr, $con = 'no'){
         $sql = "SELECT * FROM ".$table. " WHERE ";
         $t = '';
@@ -48,6 +87,13 @@ class Database{
         return $data;
     }
     public function insert($table, $arr){
+        if (!array_key_exists('id', $arr)) {
+            $manual_id = $this->get_manual_id_value($table);
+            if ($manual_id !== null) {
+                $arr = ['id' => $manual_id] + $arr;
+            }
+        }
+
         $sql = "INSERT INTO ".$table. " ";
         $t1 = '';
         $t2 = '';
@@ -65,10 +111,19 @@ class Database{
             }
         }
         $sql .= "($t1) VALUES ($t2);";
-        $result = $this->query($sql);
+        try {
+            $result = $this->query($sql);
+        } catch (mysqli_sql_exception $e) {
+            return 0;
+        }
 
         if ($result) {
-            return mysqli_insert_id($this->link);
+            $insert_id = mysqli_insert_id($this->link);
+            if ($insert_id) {
+                return $insert_id;
+            }
+
+            return intval($arr['id'] ?? 0);
         } else {
             return 0;
         }

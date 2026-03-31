@@ -45,6 +45,7 @@
     <title>SamCoding</title>
     <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="assets/css/contest_detail.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <?php include_once 'includes/novbar.php';?>
@@ -147,9 +148,9 @@
 
         <div class="contest-tab-wrap">
             <div class="contest-tabs">
-                <button class="contest-tab active" onclick="switchTab('problems')">Masalalar</button>
-                <button class="contest-tab" onclick="switchTab('participants')">Qatnashuvchilar</button>
-                <button class="contest-tab" onclick="switchTab('results')">Natijalar</button>
+                <button class="contest-tab active" onclick="switchTab(event, 'problems')">Masalalar</button>
+                <button class="contest-tab" onclick="switchTab(event, 'participants')">Qatnashuvchilar</button>
+                <button class="contest-tab" onclick="switchTab(event, 'results')">Natijalar</button>
             </div>
         </div>
 
@@ -418,18 +419,28 @@
                     return data;
                 })
                 .then(data => {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true
+                    });
                     if (data.success) {
-                        toastr.success(data.message,  {timeOut: 1000});
-                        setTimeout(() => {
-                            location.reload();
-                        }, 1000);
+                        Toast.fire({ icon: 'success', title: data.message });
+                        setTimeout(() => location.reload(), 1500);
                     } else {
-                        toastr.error(data.message, {timeOut: 1000});
+                        Toast.fire({ icon: 'error', title: data.message });
                     }
                 })
                 .catch(error => {
                     console.error('Xatolik yuz berdi:', error);
-                    toastr.error(error.message || "Serverda xatolik yuz berdi", {timeOut: 1500});
+                    Swal.fire({
+                        toast: true, position: 'top-end',
+                        icon: 'error',
+                        title: error.message || "Serverda xatolik yuz berdi",
+                        showConfirmButton: false, timer: 2000, timerProgressBar: true
+                    });
                 });
             });
         });
@@ -479,15 +490,10 @@
             setInterval(updateCountdown, 1000);
         }
         
-        function switchTab(tab) {
-            document.querySelectorAll('.contest-tab').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
+        function switchTab(e, tab) {
+            document.querySelectorAll('.contest-tab').forEach(btn => btn.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
             document.getElementById(tab + 'Tab').classList.add('active');
         }
     </script>

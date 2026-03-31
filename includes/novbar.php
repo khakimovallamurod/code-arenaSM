@@ -2,6 +2,21 @@
 <!-- Core Dependencies -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="assets/css/navbar.css?v=<?= time() ?>">
+<!-- Tailwind CSS Play CDN (preflight disabled to avoid conflicts with existing styles) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+    corePlugins: { preflight: false },
+    theme: {
+        extend: {
+            colors: {
+                primary: '#10b981',
+                'primary-dark': '#059669',
+            }
+        }
+    }
+}
+</script>
 
 <nav class="sm-navbar">
     <div class="sm-nav-container">

@@ -1,7 +1,9 @@
 <?php
 // cn-attempts-table.php
 include_once 'config.php';
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['id']) || empty($_SESSION['id'])) {
     exit;
@@ -111,10 +113,11 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
     <div id="codeModal" class="code-modal-overlay" onclick="closeCodeModal(event)">
         <div class="code-modal-panel">
             <div class="code-modal-header">
-                <h3>Kodni ko'rish</h3>
-                <button type="button" class="code-modal-close" onclick="closeCodeModal()">
-                    ×
-                </button>
+                <div class="code-modal-title-wrap">
+                    <span class="code-modal-icon">💻</span>
+                    <h3>Kodni ko'rish</h3>
+                </div>
+                <button type="button" class="code-modal-close" onclick="closeCodeModal()" title="Yopish">×</button>
             </div>
 
             <pre class="code-modal-pre">
@@ -122,14 +125,166 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
 </pre>
 
             <div class="code-modal-footer">
-                <button type="button" class="btn btn-primary" onclick="copyModalCode()">📋 Copy Code</button>
+                <button type="button" class="code-modal-action code-modal-action-primary" onclick="copyModalCode()">
+                    <span>📋</span>
+                    <span>Copy Code</span>
+                </button>
+                <button type="button" class="code-modal-action code-modal-action-secondary" onclick="closeCodeModal()">Yopish</button>
             </div>
         </div>
     </div>
 
+    <style>
+    .code-modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.68);
+        z-index: 9000;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+    }
+    .code-modal-overlay.show {
+        display: flex;
+    }
+    #codeModal.code-modal-overlay.show {
+        display: flex;
+    }
+    .code-modal-panel {
+        width: 100%;
+        max-width: 720px;
+        max-height: 90vh;
+        position: relative;
+        top: auto;
+        left: auto;
+        transform: none;
+        margin: 0 auto;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        background: #ffffff;
+        border: 1px solid #dbe3ee;
+        border-radius: 16px;
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+    }
+    .code-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .code-modal-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+    }
+    .code-modal-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #10b981, #059669);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 32px;
+    }
+    .code-modal-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: #0f172a;
+    }
+    .code-modal-close {
+        width: 34px;
+        height: 34px;
+        border: none;
+        border-radius: 9px;
+        background: #e2e8f0;
+        color: #475569;
+        font-size: 1.25rem;
+        line-height: 1;
+        cursor: pointer;
+    }
+    .code-modal-close:hover {
+        background: #fee2e2;
+        color: #dc2626;
+    }
+    .code-modal-pre {
+        margin: 0;
+        padding: 1.25rem;
+        overflow: auto;
+        flex: 1;
+        background: #111827;
+        color: #e5eefc;
+        font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        font-size: 0.84rem;
+        line-height: 1.6;
+        white-space: pre;
+    }
+    .code-modal-footer {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.25rem;
+        background: #f8fafc;
+        border-top: 1px solid #e2e8f0;
+    }
+    .code-modal-action {
+        appearance: none;
+        border: 1px solid transparent;
+        border-radius: 10px;
+        padding: 0.72rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.45rem;
+        transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+    }
+    .code-modal-action:hover {
+        transform: translateY(-1px);
+    }
+    .code-modal-action-primary {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+    }
+    .code-modal-action-primary:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+    }
+    .code-modal-action-secondary {
+        background: #ffffff;
+        border-color: #cbd5e1;
+        color: #334155;
+    }
+    .code-modal-action-secondary:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
+    @media (max-width: 640px) {
+        .code-modal-footer {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .code-modal-action {
+            width: 100%;
+        }
+    }
+    </style>
+
     <script>
     async function showCodeModal(attemptId) {
         try {
+            const overlay = document.getElementById('codeModal');
+            overlay.classList.add('show');
+            document.getElementById('modalCodeContent').textContent = 'Yuklanmoqda...';
+
             const response = await fetch('get_contest_attempt_code.php', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -137,7 +292,6 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
             });
             const code = await response.text();
             document.getElementById('modalCodeContent').textContent = code;
-            document.getElementById('codeModal').style.display = 'block';
         } catch (error) {
             if (typeof Swal !== 'undefined') {
                 Swal.fire({
@@ -155,8 +309,14 @@ $visibleAttempts = array_slice($attempts, $startIndex, $attemptsPerPage);
 
     function closeCodeModal(event) {
         if (event && event.target && event.target.id !== 'codeModal') return;
-        document.getElementById('codeModal').style.display = 'none';
+        document.getElementById('codeModal').classList.remove('show');
     }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeCodeModal();
+        }
+    });
 
     function copyModalCode() {
         const code = document.getElementById('modalCodeContent').textContent;

@@ -10,10 +10,22 @@
    $contest_id = intval($_POST['contestid']);
 
    $db = new Database();
+
+   // Verify contest is active and user is registered
+   $contest_info = $db->get_data_by_table("contests", ['id' => $contest_id]);
+   if (!$contest_info || intval($contest_info['status']) < 1) {
+       header("Location: contests.php");
+       exit;
+   }
+   $register_data = $db->is_register_user($contest_id, $user_id);
+   $is_registered = (is_array($register_data) && array_key_exists('status', $register_data) && intval($register_data['status']) === 1);
+   if (!$is_registered) {
+       header("Location: contests.php");
+       exit;
+   }
+
    $solutions = $db->get_data_by_table("contest_problems",['contest_id'=>$contest_id, 'id'=>$problem_id]);
    $test_examples = $db->get_data_by_table_all('contest_tests', " where cn_problem_id=$problem_id LIMIT 2");
-   
-   
    $contest_problems = $db->get_data_by_table_all('contest_problems', " where contest_id=$contest_id ORDER BY id ASC");
 ?>
 <!DOCTYPE html>
@@ -234,32 +246,35 @@
         <div class="problem-layout">
             <!-- Problem Statement -->
             <div class="problem-statement">
-                <h2 class="contest-problem-main-title"><?=$solutions['title'] ?></h2>
-                <p class="contest-problem-desc"><?=$solutions['descript'] ?></p>
+                <h2 class="contest-problem-main-title"><?= htmlspecialchars($solutions['title']) ?></h2>
+                <p class="contest-problem-desc"><?= nl2br(htmlspecialchars($solutions['descript'])) ?></p>
                 <h3 class="problem-section-title">INPUT:</h3>
-                <pre><?=$solutions['input_format'] ?></pre>
+                <pre><?= htmlspecialchars($solutions['input_format']) ?></pre>
 
                 <h3 class="problem-section-title">OUTPUT:</h3>
-                <pre><?=$solutions['output_format'] ?></pre>
+                <pre><?= htmlspecialchars($solutions['output_format']) ?></pre>
 
                 <?php foreach ($test_examples as $index => $test): ?>
-                <h3 class="problem-section-title">Example <?=$index+1?>:</h3>
-                <pre>
-<strong>Input</strong>:</br><?=$test['input']?>
-</br><strong>Output</strong>:</br><?=$test['output']?>
-                </pre>
-                <?php endforeach ; ?>
+                <h3 class="problem-section-title">Example <?= $index + 1 ?>:</h3>
+                <pre><strong>Input</strong>:
+<?= htmlspecialchars($test['input']) ?>
+
+<strong>Output</strong>:
+<?= htmlspecialchars($test['output']) ?></pre>
+                <?php endforeach; ?>
                 <h3 class="problem-section-title">Constraints:</h3>
                 <ul>
-                    <li><?=$solutions['constraints'] ?></li>
+                    <li><?= htmlspecialchars($solutions['constraints']) ?></li>
                 </ul>
                 <div class="problem-meta-tags">
-                    <span class="badge badge-<?=$solutions['difficulty'] ?>"><?=ucfirst($solutions['difficulty'])?></span>
-                    <span class="badge badge-<?=$solutions['category']?>"><?= ucfirst($solutions['category']) ?></span>
+                    <span class="badge badge-<?= htmlspecialchars($solutions['difficulty']) ?>"><?= ucfirst(htmlspecialchars($solutions['difficulty'])) ?></span>
+                    <span class="badge badge-<?= htmlspecialchars($solutions['category']) ?>"><?= ucfirst(htmlspecialchars($solutions['category'])) ?></span>
                 </div>
+                <?php if (!empty($solutions['izoh'])): ?>
                 <div class="problem-note">
-                    <strong>💡 Izoh:</strong><?=$solutions['izoh'] ?>
+                    <strong>💡 Izoh:</strong> <?= nl2br(htmlspecialchars($solutions['izoh'])) ?>
                 </div>
+                <?php endif; ?>
             </div>
             <!-- Code Editor Section -->
             <div>

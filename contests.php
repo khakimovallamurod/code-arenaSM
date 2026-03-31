@@ -134,10 +134,6 @@
                     <span class="contests-overview-value"><?=$kutilayotgan_count?></span>
                     <span class="contests-overview-label">Kutilayotgan</span>
                 </div>
-                <div class="contests-overview-item">
-                    <span class="contests-overview-value"><?=$tugagan_count?></span>
-                    <span class="contests-overview-label">Tugagan</span>
-                </div>
             </div>
         </section>
 
@@ -165,16 +161,6 @@
         </section>
         <?php endif; ?>
 
-        <?php if (count($tugagan_contestlar) > 0): ?>
-        <section class="contest-section">
-        <h2 class="mb-1">Yakunlangan musobaqalar</h2>
-        <div class="card-grid contest-card-grid">
-            <?php foreach ($tugagan_contestlar as $contest): ?>
-                <?php renderContestCard($contest); ?>
-            <?php endforeach; ?>
-        </div>
-        </section>
-        <?php endif; ?>
 
         <!-- Past Contests -->
         

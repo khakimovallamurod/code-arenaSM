@@ -14,15 +14,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SamCoding</title>
+    <title>SamCoding — Masalalar</title>
     <link rel="stylesheet" href="assets/css/styles-light.css?v=<?php echo time(); ?>">
+    <style>
+        .problems-hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .problems-hero h1 { margin: 0; }
+        .problems-count {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            background: var(--bg-tertiary);
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .status-icon-solved { color: #10b981; font-size: 1.1rem; font-weight: 700; }
+        .status-icon-none   { color: #cbd5e1; font-size: 1.1rem; }
+        #problemsTable tbody tr {
+            transition: background 0.15s;
+        }
+        #problemsTable tbody tr:hover {
+            background: #f0fdf4;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-secondary);
+        }
+        .empty-state svg { margin: 0 auto 1rem; display: block; opacity: 0.35; }
+    </style>
 </head>
 <body>
     <!-- Navbar -->
     <?php include_once 'includes/novbar.php';?>
     <!-- Main Content -->
     <div class="container">
-        <h1 class="mb-2">Masalalar toplami</h1>
+        <div class="problems-hero">
+            <h1>Masalalar to'plami</h1>
+            <span class="problems-count"><?= count($problems) ?> ta masala</span>
+        </div>
         <!-- Filters -->
         <div class="filters">
             <div class="search-box">
@@ -84,8 +120,12 @@
                     <?php foreach ($visibleProblems as $problem): ?>
                     <tr onclick="window.location='problem-detail.php?id=<?= (int)$problem['id'] ?>'">
                         <td data-label="ID"><strong><?= str_pad(htmlspecialchars($problem['id']), 6, '0', STR_PAD_LEFT) ?></strong></td>
-                        <td data-label="Status" style="font-size: 1.5rem; color: <?= ((int)$problem['solved'] === 1) ? 'var(--success)' : 'inherit' ?>">
-                            <?= ((int)$problem['solved'] === 1) ? '✓' : '—' ?>
+                        <td data-label="Status">
+                            <?php if ((int)$problem['solved'] === 1): ?>
+                                <span class="status-icon-solved" title="Yechilgan">✓</span>
+                            <?php else: ?>
+                                <span class="status-icon-none" title="Yechilmagan">—</span>
+                            <?php endif; ?>
                         </td>
                         <td data-label="Masala"><strong><?= htmlspecialchars($problem['title']) ?></strong></td>
                         <td data-label="Qiyinchiligi"><span class="badge badge-<?= $problem['difficulty'] ?>"><?= ucfirst($problem['difficulty']) ?></span></td>
@@ -160,7 +200,11 @@
             tbody.innerHTML = "";
 
             if (filteredProblems.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: #718096;">Hech qanday masala topilmadi</td></tr>';
+                tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                <p style="font-size:1rem;font-weight:600;margin-bottom:0.25rem;">Hech qanday masala topilmadi</p>
+                <p style="font-size:0.875rem;">Filtirlarni o'zgartirib ko'ring</p>
+            </div></td></tr>`;
                 document.querySelector('.pagination-container').style.display = 'none';
                 return;
             }
@@ -187,12 +231,13 @@
                 };
                 
                 const isSolved = Number(problem.solved) === 1;
-                const statusColor = isSolved ? 'var(--success)' : 'inherit';
-                const statusIcon = isSolved ? '✓' : '—';
-                
+                const statusIcon = isSolved
+                    ? `<span class="status-icon-solved" title="Yechilgan">✓</span>`
+                    : `<span class="status-icon-none" title="Yechilmagan">—</span>`;
+
                 row.innerHTML = `
                     <td data-label="ID"><strong>${String(problem.id).padStart(6, '0')}</strong></td>
-                    <td data-label="Status" style="font-size: 1.5rem; color: ${statusColor};">${statusIcon}</td>
+                    <td data-label="Status">${statusIcon}</td>
                     <td data-label="Masala"><strong>${problem.title}</strong></td>
                     <td data-label="Qiyinchiligi"><span class="badge badge-${problem.difficulty}">${problem.difficulty.charAt(0).toUpperCase() + problem.difficulty.slice(1)}</span></td>
                     <td data-label="Masala turi"><span class="badge badge-${problem.category}">${problem.category.charAt(0).toUpperCase() + problem.category.slice(1)}</span></td>
